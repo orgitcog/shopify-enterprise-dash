@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Layout } from '../src/components/Layout';
 import './styles/tailwind.css';
 import { TestModeProvider } from '../src/context/TestModeContext';
+import { AuthProvider } from '../src/context/AuthContext';
 
 const queryClient = new QueryClient();
 
@@ -32,13 +33,15 @@ export default function App() {
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <AppProvider i18n={enTranslations}>
+          <AuthProvider>
             <TestModeProvider>
-              <Layout>
-                <Outlet />
-              </Layout>
+              <AppProvider i18n={enTranslations}>
+                <Layout>
+                  <Outlet />
+                </Layout>
+              </AppProvider>
             </TestModeProvider>
-          </AppProvider>
+          </AuthProvider>
         </QueryClientProvider>
         <ScrollRestoration />
         <Scripts />

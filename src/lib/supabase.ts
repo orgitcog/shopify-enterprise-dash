@@ -1,38 +1,108 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
 
-const supabaseUrl =
-  typeof window === "undefined"
-    ? process.env.VITE_SUPABASE_URL || ""
-    : import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseAnonKey =
-  typeof window === "undefined"
-    ? process.env.VITE_SUPABASE_ANON_KEY || ""
-    : import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+// Get environment variables with proper fallbacks
+const getEnvVar = (key: string): string => {
+  if (typeof window === "undefined") {
+    // Server-side: use process.env
+    return process.env[key] || "";
+  }
+  // Client-side: use import.meta.env
+  return import.meta.env?.[key] || "";
+};
 
-if (!supabaseUrl || !supabaseAnonKey) {
+const supabaseUrl = getEnvVar("VITE_SUPABASE_URL");
+const supabaseAnonKey = getEnvVar("VITE_SUPABASE_ANON_KEY");
+
+// Check if we have valid Supabase configuration
+const hasValidConfig =
+  supabaseUrl &&
+  supabaseAnonKey &&
+  !supabaseUrl.includes("placeholder") &&
+  supabaseUrl.startsWith("https://");
+
+if (!hasValidConfig) {
   console.warn(
-    "Missing Supabase environment variables. Please check your .env file.",
+    "Missing or invalid Supabase environment variables. Running in offline/mock mode.",
   );
 }
 
-export const supabase = createClient<Database>(
-  supabaseUrl || "http://localhost:54321", // Fallback for development
-  supabaseAnonKey || "placeholder-key", // Fallback for development
-  {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true,
+// Create a mock client for when Supabase is not configured
+const createMockClient = (): SupabaseClient<Database> => {
+  const mockResponse = {
+    data: null,
+    error: null,
+    count: null,
+    status: 200,
+    statusText: "OK",
+  };
+
+  const mockQueryBuilder = {
+    select: () => mockQueryBuilder,
+    insert: () => mockQueryBuilder,
+    update: () => mockQueryBuilder,
+    delete: () => mockQueryBuilder,
+    eq: () => mockQueryBuilder,
+    single: () => Promise.resolve(mockResponse),
+    order: () => mockQueryBuilder,
+    then: (resolve: (value: typeof mockResponse) => void) =>
+      Promise.resolve(mockResponse).then(resolve),
+  };
+
+  const mockAuth = {
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+    signInWithPassword: () =>
+      Promise.resolve({ data: { user: null, session: null }, error: null }),
+    signUp: () =>
+      Promise.resolve({ data: { user: null, session: null }, error: null }),
+    signOut: () => Promise.resolve({ error: null }),
+    resetPasswordForEmail: () => Promise.resolve({ data: {}, error: null }),
+    onAuthStateChange: () => ({
+      data: { subscription: { unsubscribe: () => {} } },
+    }),
+  };
+
+  return {
+    from: () => mockQueryBuilder,
+    auth: mockAuth,
+    storage: {
+      from: () => ({
+        upload: () => Promise.resolve({ data: null, error: null }),
+        download: () => Promise.resolve({ data: null, error: null }),
+        getPublicUrl: () => ({ data: { publicUrl: "" } }),
+      }),
     },
-  },
-);
+  } as unknown as SupabaseClient<Database>;
+};
+
+// Export the Supabase client - either real or mock
+export const supabase: SupabaseClient<Database> = hasValidConfig
+  ? createClient<Database>(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+      },
+    })
+  : createMockClient();
+
+// Export a flag to check if we're in mock mode
+export const isSupabaseMockMode = !hasValidConfig;
 
 export const getStores = async () => {
-  const { data, error } = await supabase.from("stores").select("*");
+  if (!hasValidConfig) {
+    console.log("Supabase not configured - returning empty stores array");
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("stores")
+    .select("*")
+    .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching stores:", error);
+    console.error("Error fetching stores from Supabase:", error);
     return [];
   }
 
@@ -40,6 +110,10 @@ export const getStores = async () => {
 };
 
 export const getStoreById = async (id: string) => {
+  if (!hasValidConfig) {
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("stores")
     .select("*")
@@ -59,6 +133,11 @@ export const createStore = async (store: {
   url: string;
   status?: string;
 }) => {
+  if (!hasValidConfig) {
+    console.warn("Supabase not configured - cannot create store");
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("stores")
     .insert([
@@ -90,6 +169,11 @@ export const updateStore = async (
     status?: string;
   },
 ) => {
+  if (!hasValidConfig) {
+    console.warn("Supabase not configured - cannot update store");
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("stores")
     .update(updates)
@@ -106,6 +190,11 @@ export const updateStore = async (
 };
 
 export const deleteStore = async (id: string) => {
+  if (!hasValidConfig) {
+    console.warn("Supabase not configured - cannot delete store");
+    return false;
+  }
+
   const { error } = await supabase.from("stores").delete().eq("id", id);
 
   if (error) {

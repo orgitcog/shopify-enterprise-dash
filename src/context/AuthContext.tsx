@@ -8,7 +8,7 @@ import {
   AuthUser,
   AuthContextType,
 } from "../lib/auth";
-import { supabase } from "../lib/supabase";
+import { supabase, isSupabaseMockMode } from "../lib/supabase";
 
 // Create auth context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,12 +20,13 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [isTestMode, setIsTestMode] = useState(false);
+  // Auto-enable test mode if Supabase is not configured
+  const [isTestMode, setIsTestMode] = useState(isSupabaseMockMode);
 
   // Initialize auth state
   useEffect(() => {
-    if (isTestMode) {
-      // Set a test user in test mode
+    if (isTestMode || isSupabaseMockMode) {
+      // Set a test user in test/mock mode
       setUser({
         id: "test-user",
         email: "test@example.com",
@@ -95,7 +96,13 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Auth methods
   const handleSignIn = async (email: string, password: string) => {
-    if (isTestMode) {
+    if (isTestMode || isSupabaseMockMode) {
+      setUser({
+        id: "test-user",
+        email,
+        role: "admin",
+        display_name: "Test User",
+      });
       return { error: null, data: { user: { id: "test-user", email } } };
     }
 
@@ -111,7 +118,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const handleSignUp = async (email: string, password: string) => {
-    if (isTestMode) {
+    if (isTestMode || isSupabaseMockMode) {
       return { error: null, data: { user: { id: "test-user", email } } };
     }
 
@@ -127,7 +134,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const handleSignOut = async () => {
-    if (isTestMode) {
+    if (isTestMode || isSupabaseMockMode) {
       setUser(null);
       return;
     }
@@ -140,7 +147,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const handleResetPassword = async (email: string) => {
-    if (isTestMode) {
+    if (isTestMode || isSupabaseMockMode) {
       return {
         error: null,
         data: { message: "Password reset email sent (test mode)" },
@@ -163,7 +170,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return { error: new Error("User not authenticated"), data: null };
     }
 
-    if (isTestMode) {
+    if (isTestMode || isSupabaseMockMode) {
       setUser({ ...user, ...updates });
       return { error: null, data: updates };
     }

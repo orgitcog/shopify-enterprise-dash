@@ -12,6 +12,7 @@ import "@shopify/polaris/build/esm/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Layout } from "./components/Layout";
 import { TestModeProvider } from "./context/TestModeContext";
+import { AuthProvider } from "./context/AuthContext";
 import "./styles/tailwind.css";
 
 const queryClient = new QueryClient();
@@ -37,13 +38,15 @@ export default function App() {
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <TestModeProvider>
-            <AppProvider i18n={enTranslations}>
-              <Layout>
-                <Outlet />
-              </Layout>
-            </AppProvider>
-          </TestModeProvider>
+          <AuthProvider>
+            <TestModeProvider>
+              <AppProvider i18n={enTranslations}>
+                <Layout>
+                  <Outlet />
+                </Layout>
+              </AppProvider>
+            </TestModeProvider>
+          </AuthProvider>
         </QueryClientProvider>
         <ScrollRestoration />
         <Scripts />

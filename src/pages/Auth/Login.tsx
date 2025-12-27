@@ -1,26 +1,34 @@
-import React, { useState } from 'react';
-import { Card, FormLayout, TextField, Button, Banner, Text, Link } from '@shopify/polaris';
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Lock, Mail } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Card,
+  FormLayout,
+  TextField,
+  Button,
+  Banner,
+  Text,
+  Link,
+} from "@shopify/polaris";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Lock, Mail } from "lucide-react";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const { signIn, loading, isTestMode, toggleTestMode } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   // Get redirect path from location state or default to dashboard
-  const from = (location.state as any)?.from?.pathname || '/';
+  const from = (location.state as any)?.from?.pathname || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage('');
+    setErrorMessage("");
 
     if (!email || !password) {
-      setErrorMessage('Please enter both email and password');
+      setErrorMessage("Please enter both email and password");
       return;
     }
 
@@ -33,8 +41,8 @@ export default function Login() {
         navigate(from, { replace: true });
       }
     } catch (error) {
-      setErrorMessage('An unexpected error occurred. Please try again later.');
-      console.error('Login error:', error);
+      setErrorMessage("An unexpected error occurred. Please try again later.");
+      console.error("Login error:", error);
     }
   };
 
@@ -43,14 +51,16 @@ export default function Login() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">Welcome Back</h1>
-          <p className="text-gray-600 mt-2">Log in to your Shopify Enterprise Dashboard</p>
+          <p className="text-gray-600 mt-2">
+            Log in to your Shopify Enterprise Dashboard
+          </p>
         </div>
 
         <Card>
           <Card.Section>
             {errorMessage && (
               <div className="mb-4">
-                <Banner status="critical" onDismiss={() => setErrorMessage('')}>
+                <Banner status="critical" onDismiss={() => setErrorMessage("")}>
                   <p>{errorMessage}</p>
                 </Banner>
               </div>
@@ -94,18 +104,13 @@ export default function Login() {
 
                 <div className="text-center mt-4">
                   <Text variant="bodyMd" as="p">
-                    Don't have an account?{' '}
-                    <Link url="/signup">Sign up</Link>
+                    Don't have an account? <Link url="/signup">Sign up</Link>
                   </Text>
                 </div>
 
                 <div className="mt-4 pt-4 border-t">
-                  <Button 
-                    onClick={toggleTestMode} 
-                    fullWidth
-                    plain
-                  >
-                    {isTestMode ? 'Disable Test Mode' : 'Enable Test Mode'}
+                  <Button onClick={toggleTestMode} fullWidth plain>
+                    {isTestMode ? "Disable Test Mode" : "Enable Test Mode"}
                   </Button>
                 </div>
               </FormLayout>

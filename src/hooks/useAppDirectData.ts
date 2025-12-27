@@ -1,5 +1,5 @@
-import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
-import * as AppDirectAPI from '../lib/appdirect';
+import { useQuery, useMutation, QueryClient } from "@tanstack/react-query";
+import * as AppDirectAPI from "../lib/appdirect";
 
 // Configure the query client
 const queryClient = new QueryClient();
@@ -7,40 +7,40 @@ const queryClient = new QueryClient();
 // Hook for applications
 export const useApplications = () => {
   return useQuery({
-    queryKey: ['appDirectApplications'],
+    queryKey: ["appDirectApplications"],
     queryFn: () => {
       // Use the mock function during development
       return AppDirectAPI.getMockApplications();
       // In production, use: return AppDirectAPI.getApplications();
-    }
+    },
   });
 };
 
 export const useApplication = (applicationId: string) => {
   return useQuery({
-    queryKey: ['appDirectApplication', applicationId],
+    queryKey: ["appDirectApplication", applicationId],
     queryFn: () => AppDirectAPI.getApplication(applicationId),
-    enabled: !!applicationId
+    enabled: !!applicationId,
   });
 };
 
 // Hook for subscriptions
 export const useSubscriptions = () => {
   return useQuery({
-    queryKey: ['appDirectSubscriptions'],
+    queryKey: ["appDirectSubscriptions"],
     queryFn: () => {
       // Use the mock function during development
       return AppDirectAPI.getMockSubscriptions();
       // In production, use: return AppDirectAPI.getSubscriptions();
-    }
+    },
   });
 };
 
 export const useSubscription = (subscriptionId: string) => {
   return useQuery({
-    queryKey: ['appDirectSubscription', subscriptionId],
+    queryKey: ["appDirectSubscription", subscriptionId],
     queryFn: () => AppDirectAPI.getSubscription(subscriptionId),
-    enabled: !!subscriptionId
+    enabled: !!subscriptionId,
   });
 };
 
@@ -50,7 +50,7 @@ export const useCreateSubscription = () => {
     mutationFn: ({
       applicationId,
       plan,
-      account
+      account,
     }: {
       applicationId: string;
       plan: string;
@@ -58,8 +58,8 @@ export const useCreateSubscription = () => {
     }) => AppDirectAPI.createSubscription(applicationId, plan, account),
     onSuccess: () => {
       // Invalidate subscriptions query to refresh the list
-      queryClient.invalidateQueries({ queryKey: ['appDirectSubscriptions'] });
-    }
+      queryClient.invalidateQueries({ queryKey: ["appDirectSubscriptions"] });
+    },
   });
 };
 
@@ -68,57 +68,58 @@ export const useCancelSubscription = () => {
   return useMutation({
     mutationFn: ({
       subscriptionId,
-      reason
+      reason,
     }: {
       subscriptionId: string;
       reason: string;
     }) => AppDirectAPI.cancelSubscription(subscriptionId, reason),
     onSuccess: () => {
       // Invalidate subscriptions query to refresh the list
-      queryClient.invalidateQueries({ queryKey: ['appDirectSubscriptions'] });
-    }
+      queryClient.invalidateQueries({ queryKey: ["appDirectSubscriptions"] });
+    },
   });
 };
 
 // Hook for users
 export const useUsers = () => {
   return useQuery({
-    queryKey: ['appDirectUsers'],
-    queryFn: () => AppDirectAPI.getUsers()
+    queryKey: ["appDirectUsers"],
+    queryFn: () => AppDirectAPI.getUsers(),
   });
 };
 
 export const useUser = (userId: string) => {
   return useQuery({
-    queryKey: ['appDirectUser', userId],
+    queryKey: ["appDirectUser", userId],
     queryFn: () => AppDirectAPI.getUser(userId),
-    enabled: !!userId
+    enabled: !!userId,
   });
 };
 
 // Hook for creating a user
 export const useCreateUser = () => {
   return useMutation({
-    mutationFn: (userData: Partial<AppDirectAPI.AppDirectUser>) => AppDirectAPI.createUser(userData),
+    mutationFn: (userData: Partial<AppDirectAPI.AppDirectUser>) =>
+      AppDirectAPI.createUser(userData),
     onSuccess: () => {
       // Invalidate users query to refresh the list
-      queryClient.invalidateQueries({ queryKey: ['appDirectUsers'] });
-    }
+      queryClient.invalidateQueries({ queryKey: ["appDirectUsers"] });
+    },
   });
 };
 
 // Hook for events
 export const useEvents = () => {
   return useQuery({
-    queryKey: ['appDirectEvents'],
-    queryFn: () => AppDirectAPI.getEvents()
+    queryKey: ["appDirectEvents"],
+    queryFn: () => AppDirectAPI.getEvents(),
   });
 };
 
 export const useEvent = (eventId: string) => {
   return useQuery({
-    queryKey: ['appDirectEvent', eventId],
+    queryKey: ["appDirectEvent", eventId],
     queryFn: () => AppDirectAPI.getEvent(eventId),
-    enabled: !!eventId
+    enabled: !!eventId,
   });
 };

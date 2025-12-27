@@ -1,21 +1,21 @@
-import React from 'react';
-import { Navigation } from '@shopify/polaris';
-import { useNavigate } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Users, 
-  ShieldCheck, 
-  BarChart3, 
-  FileText, 
+import React from "react";
+import { Navigation } from "@shopify/polaris";
+import { useNavigate } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Users,
+  ShieldCheck,
+  BarChart3,
+  FileText,
   Settings,
   PlayCircle,
   Network,
   Box,
   GitBranch,
   Braces,
-  Code2
-} from 'lucide-react';
-import { useTestMode } from '../../context/TestModeContext';
+  Code2,
+} from "lucide-react";
+import { useTestMode } from "../../context/TestModeContext";
 
 interface NavigationItem {
   label: string;
@@ -35,54 +35,54 @@ export function NavigationMenu({ _items }: NavigationMenuProps) {
 
   const mainItems = [
     {
-      label: 'Overview',
+      label: "Overview",
       icon: LayoutDashboard,
-      url: '/',
-      selected: location.pathname === '/'
+      url: "/",
+      selected: location.pathname === "/",
     },
     {
-      label: 'Playground',
+      label: "Playground",
       icon: PlayCircle,
-      url: '/playground',
-      selected: location.pathname === '/playground',
-      badge: isTestMode ? 'Test Mode' : undefined
+      url: "/playground",
+      selected: location.pathname === "/playground",
+      badge: isTestMode ? "Test Mode" : undefined,
     },
     {
-      label: 'Users',
+      label: "Users",
       icon: Users,
-      url: '/users',
-      selected: location.pathname.startsWith('/users')
+      url: "/users",
+      selected: location.pathname.startsWith("/users"),
     },
     {
-      label: 'Roles',
+      label: "Roles",
       icon: ShieldCheck,
-      url: '/roles',
-      selected: location.pathname.startsWith('/roles')
+      url: "/roles",
+      selected: location.pathname.startsWith("/roles"),
     },
     {
-      label: 'Analytics',
+      label: "Analytics",
       icon: BarChart3,
-      url: '/analytics',
-      selected: location.pathname.startsWith('/analytics')
+      url: "/analytics",
+      selected: location.pathname.startsWith("/analytics"),
     },
     {
-      label: 'Reports',
+      label: "Reports",
       icon: FileText,
-      url: '/reports',
-      selected: location.pathname.startsWith('/reports')
+      url: "/reports",
+      selected: location.pathname.startsWith("/reports"),
     },
     {
-      label: 'Settings',
+      label: "Settings",
       icon: Settings,
-      url: '/settings',
-      selected: location.pathname.startsWith('/settings')
-    }
+      url: "/settings",
+      selected: location.pathname.startsWith("/settings"),
+    },
   ];
 
   return (
     <Navigation location="/">
       <Navigation.Section
-        items={mainItems.map(item => ({
+        items={mainItems.map((item) => ({
           label: item.label,
           icon: item.icon,
           url: item.url,
@@ -91,7 +91,7 @@ export function NavigationMenu({ _items }: NavigationMenuProps) {
           onClick: (e: React.MouseEvent) => {
             e.preventDefault();
             navigate(item.url);
-          }
+          },
         }))}
       />
 
@@ -99,35 +99,35 @@ export function NavigationMenu({ _items }: NavigationMenuProps) {
         title="Infrastructure"
         items={[
           {
-            label: 'Architectures',
+            label: "Architectures",
             icon: Box,
-            url: '/architectures',
-            selected: location.pathname.startsWith('/architectures'),
+            url: "/architectures",
+            selected: location.pathname.startsWith("/architectures"),
             onClick: (e: React.MouseEvent) => {
               e.preventDefault();
-              navigate('/architectures');
-            }
+              navigate("/architectures");
+            },
           },
           {
-            label: 'Networks',
+            label: "Networks",
             icon: Network,
-            url: '/networks',
-            selected: location.pathname.startsWith('/networks'),
+            url: "/networks",
+            selected: location.pathname.startsWith("/networks"),
             onClick: (e: React.MouseEvent) => {
               e.preventDefault();
-              navigate('/networks');
-            }
+              navigate("/networks");
+            },
           },
           {
-            label: 'Orchestrations',
+            label: "Orchestrations",
             icon: GitBranch,
-            url: '/orchestrations',
-            selected: location.pathname.startsWith('/orchestrations'),
+            url: "/orchestrations",
+            selected: location.pathname.startsWith("/orchestrations"),
             onClick: (e: React.MouseEvent) => {
               e.preventDefault();
-              navigate('/orchestrations');
-            }
-          }
+              navigate("/orchestrations");
+            },
+          },
         ]}
       />
 
@@ -135,35 +135,35 @@ export function NavigationMenu({ _items }: NavigationMenuProps) {
         title="Development"
         items={[
           {
-            label: 'Mermaid AI',
+            label: "Mermaid AI",
             icon: Braces,
-            url: '/mermaid',
-            selected: location.pathname.startsWith('/mermaid'),
+            url: "/mermaid",
+            selected: location.pathname.startsWith("/mermaid"),
             onClick: (e: React.MouseEvent) => {
               e.preventDefault();
-              navigate('/mermaid');
-            }
+              navigate("/mermaid");
+            },
           },
           {
-            label: 'Simulations',
+            label: "Simulations",
             icon: PlayCircle,
-            url: '/simulations',
-            selected: location.pathname.startsWith('/simulations'),
+            url: "/simulations",
+            selected: location.pathname.startsWith("/simulations"),
             onClick: (e: React.MouseEvent) => {
               e.preventDefault();
-              navigate('/simulations');
-            }
+              navigate("/simulations");
+            },
           },
           {
-            label: 'Webcontainers',
+            label: "Webcontainers",
             icon: Code2,
-            url: '/webcontainers',
-            selected: location.pathname.startsWith('/webcontainers'),
+            url: "/webcontainers",
+            selected: location.pathname.startsWith("/webcontainers"),
             onClick: (e: React.MouseEvent) => {
               e.preventDefault();
-              navigate('/webcontainers');
-            }
-          }
+              navigate("/webcontainers");
+            },
+          },
         ]}
       />
     </Navigation>

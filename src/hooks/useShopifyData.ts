@@ -1,5 +1,5 @@
-import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
-import * as ShopifyAPI from '../lib/shopify';
+import { useQuery, useMutation, QueryClient } from "@tanstack/react-query";
+import * as ShopifyAPI from "../lib/shopify";
 
 // Configure the query client
 const queryClient = new QueryClient();
@@ -7,7 +7,7 @@ const queryClient = new QueryClient();
 // Hook for shop information
 export const useShopInfo = () => {
   return useQuery({
-    queryKey: ['shopInfo'],
+    queryKey: ["shopInfo"],
     queryFn: () => ShopifyAPI.getShopInfo(),
   });
 };
@@ -15,7 +15,7 @@ export const useShopInfo = () => {
 // Hook for products
 export const useProducts = (limit = 10) => {
   return useQuery({
-    queryKey: ['products', limit],
+    queryKey: ["products", limit],
     queryFn: () => ShopifyAPI.getProducts(limit),
   });
 };
@@ -23,7 +23,7 @@ export const useProducts = (limit = 10) => {
 // Hook for orders
 export const useOrders = (limit = 10) => {
   return useQuery({
-    queryKey: ['orders', limit],
+    queryKey: ["orders", limit],
     queryFn: () => ShopifyAPI.getOrders(limit),
   });
 };
@@ -31,15 +31,15 @@ export const useOrders = (limit = 10) => {
 // Hook for customers
 export const useCustomers = (limit = 10) => {
   return useQuery({
-    queryKey: ['customers', limit],
+    queryKey: ["customers", limit],
     queryFn: () => ShopifyAPI.getCustomers(limit),
   });
 };
 
 // Hook for analytics
-export const useAnalytics = (interval = 'MONTH') => {
+export const useAnalytics = (interval = "MONTH") => {
   return useQuery({
-    queryKey: ['analytics', interval],
+    queryKey: ["analytics", interval],
     queryFn: () => ShopifyAPI.getAnalytics(interval),
   });
 };
@@ -50,7 +50,7 @@ export const useSyncShopifyData = () => {
     mutationFn: ShopifyAPI.syncShopifyDataToSupabase,
     onSuccess: () => {
       // Invalidate queries to refetch data
-      queryClient.invalidateQueries({ queryKey: ['storeData'] });
+      queryClient.invalidateQueries({ queryKey: ["storeData"] });
     },
   });
 };

@@ -1,12 +1,22 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { signIn, signOut, signUp, resetPassword, updateProfile, AuthUser, AuthContextType } from '../lib/auth';
-import { supabase } from '../lib/supabase';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import {
+  signIn,
+  signOut,
+  signUp,
+  resetPassword,
+  updateProfile,
+  AuthUser,
+  AuthContextType,
+} from "../lib/auth";
+import { supabase } from "../lib/supabase";
 
 // Create auth context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Auth provider component
-const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -17,10 +27,10 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     if (isTestMode) {
       // Set a test user in test mode
       setUser({
-        id: 'test-user',
-        email: 'test@example.com',
-        role: 'admin',
-        display_name: 'Test User'
+        id: "test-user",
+        email: "test@example.com",
+        role: "admin",
+        display_name: "Test User",
       });
       setLoading(false);
       return;
@@ -30,24 +40,24 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       setLoading(true);
       try {
         const { data } = await supabase.auth.getSession();
-        
+
         if (data.session?.user) {
           // Get user profile data
           const { data: profileData } = await supabase
-            .from('user_profiles')
-            .select('*')
-            .eq('id', data.session.user.id)
+            .from("user_profiles")
+            .select("*")
+            .eq("id", data.session.user.id)
             .single();
 
           setUser({
             id: data.session.user.id,
-            email: data.session.user.email || '',
-            ...profileData
+            email: data.session.user.email || "",
+            ...profileData,
           });
         }
       } catch (error) {
-        console.error('Error fetching user:', error);
-        setError(error instanceof Error ? error : new Error('Unknown error'));
+        console.error("Error fetching user:", error);
+        setError(error instanceof Error ? error : new Error("Unknown error"));
       } finally {
         setLoading(false);
       }
@@ -56,24 +66,26 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     fetchUser();
 
     // Listen for auth state changes
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        // Get user profile data
-        const { data: profileData } = await supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === "SIGNED_IN" && session?.user) {
+          // Get user profile data
+          const { data: profileData } = await supabase
+            .from("user_profiles")
+            .select("*")
+            .eq("id", session.user.id)
+            .single();
 
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          ...profileData
-        });
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null);
-      }
-    });
+          setUser({
+            id: session.user.id,
+            email: session.user.email || "",
+            ...profileData,
+          });
+        } else if (event === "SIGNED_OUT") {
+          setUser(null);
+        }
+      },
+    );
 
     // Cleanup subscription
     return () => {
@@ -84,7 +96,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   // Auth methods
   const handleSignIn = async (email: string, password: string) => {
     if (isTestMode) {
-      return { error: null, data: { user: { id: 'test-user', email } } };
+      return { error: null, data: { user: { id: "test-user", email } } };
     }
 
     setLoading(true);
@@ -100,7 +112,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   const handleSignUp = async (email: string, password: string) => {
     if (isTestMode) {
-      return { error: null, data: { user: { id: 'test-user', email } } };
+      return { error: null, data: { user: { id: "test-user", email } } };
     }
 
     setLoading(true);
@@ -129,7 +141,10 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   const handleResetPassword = async (email: string) => {
     if (isTestMode) {
-      return { error: null, data: { message: 'Password reset email sent (test mode)' } };
+      return {
+        error: null,
+        data: { message: "Password reset email sent (test mode)" },
+      };
     }
 
     setLoading(true);
@@ -145,7 +160,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   const handleUpdateProfile = async (updates: Partial<AuthUser>) => {
     if (!user) {
-      return { error: new Error('User not authenticated'), data: null };
+      return { error: new Error("User not authenticated"), data: null };
     }
 
     if (isTestMode) {
@@ -180,7 +195,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     resetPassword: handleResetPassword,
     updateProfile: handleUpdateProfile,
     isTestMode,
-    toggleTestMode
+    toggleTestMode,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -190,7 +205,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

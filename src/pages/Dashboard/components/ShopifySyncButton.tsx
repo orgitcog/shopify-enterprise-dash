@@ -1,33 +1,34 @@
-import React from 'react';
-import { Button, Toast } from '@shopify/polaris';
-import { RefreshCw } from 'lucide-react';
-import { useSyncShopifyData } from '../../../hooks/useShopifyData';
+import React from "react";
+import { Button, Toast } from "@shopify/polaris";
+import { RefreshCw } from "lucide-react";
+import { useSyncShopifyData } from "../../../hooks/useShopifyData";
 
 export function ShopifySyncButton() {
   const [showToast, setShowToast] = React.useState(false);
   const [toastContent, setToastContent] = React.useState({
-    message: '',
-    error: false
+    message: "",
+    error: false,
   });
-  
+
   const { mutate: syncData, isPending } = useSyncShopifyData();
 
   const handleSync = () => {
     syncData(undefined, {
       onSuccess: (data) => {
         setToastContent({
-          message: data.message || 'Sync completed successfully',
-          error: !data.success
+          message: data.message || "Sync completed successfully",
+          error: !data.success,
         });
         setShowToast(true);
       },
       onError: (error) => {
         setToastContent({
-          message: error instanceof Error ? error.message : 'Failed to sync data',
-          error: true
+          message:
+            error instanceof Error ? error.message : "Failed to sync data",
+          error: true,
         });
         setShowToast(true);
-      }
+      },
     });
   };
 
@@ -35,14 +36,14 @@ export function ShopifySyncButton() {
 
   return (
     <>
-      <Button 
-        onClick={handleSync} 
+      <Button
+        onClick={handleSync}
         disabled={isPending}
         icon={<RefreshCw className="w-4 h-4" />}
       >
-        {isPending ? 'Syncing...' : 'Sync Shopify Data'}
+        {isPending ? "Syncing..." : "Sync Shopify Data"}
       </Button>
-      
+
       {showToast && (
         <Toast
           content={toastContent.message}

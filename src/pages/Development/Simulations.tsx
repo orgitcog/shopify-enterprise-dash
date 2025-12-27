@@ -1,20 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Page, 
-  Card, 
-  Layout, 
-  Button, 
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Page,
+  Card,
+  Layout,
+  Button,
   ButtonGroup,
   Text,
   Badge,
   ProgressBar,
   Select,
-  TextField
-} from '@shopify/polaris';
-import { Play, Pause, RotateCcw, Settings, BarChart } from 'lucide-react';
+  TextField,
+} from "@shopify/polaris";
+import { Play, Pause, RotateCcw, Settings, BarChart } from "lucide-react";
 
 export function Simulations() {
-  const [selectedSimulation, setSelectedSimulation] = useState('load-test');
+  const [selectedSimulation, setSelectedSimulation] = useState("load-test");
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(30);
@@ -34,71 +34,74 @@ export function Simulations() {
   // Input validation functions
   const validateAndSetDuration = (value: string) => {
     const numValue = parseInt(value, 10);
-    if (!isNaN(numValue) && numValue > 0 && numValue <= 1440) { // Max 24 hours
+    if (!isNaN(numValue) && numValue > 0 && numValue <= 1440) {
+      // Max 24 hours
       setDuration(numValue);
     }
   };
 
   const validateAndSetVirtualUsers = (value: string) => {
     const numValue = parseInt(value, 10);
-    if (!isNaN(numValue) && numValue > 0 && numValue <= 100000) { // Max 100k users
+    if (!isNaN(numValue) && numValue > 0 && numValue <= 100000) {
+      // Max 100k users
       setVirtualUsers(numValue);
     }
   };
 
   const validateAndSetRps = (value: string) => {
     const numValue = parseInt(value, 10);
-    if (!isNaN(numValue) && numValue > 0 && numValue <= 10000) { // Max 10k RPS
+    if (!isNaN(numValue) && numValue > 0 && numValue <= 10000) {
+      // Max 10k RPS
       setRps(numValue);
     }
   };
 
   const simulations = [
     {
-      id: 'load-test',
-      name: 'Load Testing',
-      description: 'Simulate high traffic scenarios',
-      status: 'ready',
-      type: 'performance',
+      id: "load-test",
+      name: "Load Testing",
+      description: "Simulate high traffic scenarios",
+      status: "ready",
+      type: "performance",
       metrics: {
         users: 1000,
         duration: 30,
-        rps: 100
-      }
+        rps: 100,
+      },
     },
     {
-      id: 'failover',
-      name: 'Failover Testing',
-      description: 'Test system resilience and recovery',
-      status: 'ready',
-      type: 'reliability',
+      id: "failover",
+      name: "Failover Testing",
+      description: "Test system resilience and recovery",
+      status: "ready",
+      type: "reliability",
       metrics: {
         nodes: 5,
         scenarios: 3,
-        duration: 15
-      }
+        duration: 15,
+      },
     },
     {
-      id: 'scaling',
-      name: 'Auto-scaling Test',
-      description: 'Verify automatic resource scaling',
-      status: 'running',
-      type: 'performance',
+      id: "scaling",
+      name: "Auto-scaling Test",
+      description: "Verify automatic resource scaling",
+      status: "running",
+      type: "performance",
       metrics: {
         min_nodes: 2,
         max_nodes: 10,
-        duration: 45
-      }
-    }
+        duration: 45,
+      },
+    },
   ];
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'ready':
+      case "ready":
         return <Badge status="success">Ready</Badge>;
-      case 'running':
+      case "running":
         return <Badge status="attention">Running</Badge>;
-      case 'failed':
+      case "failed":
         return <Badge status="critical">Failed</Badge>;
       default:
         return <Badge>{status}</Badge>;
@@ -110,18 +113,18 @@ export function Simulations() {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    
+
     setIsRunning(true);
     setProgress(0);
-    
+
     // Clear any existing interval
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    
+
     // Simulate progress
     intervalRef.current = setInterval(() => {
-      setProgress(prev => {
+      setProgress((prev) => {
         if (prev >= 100) {
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
@@ -143,7 +146,7 @@ export function Simulations() {
     }
     setIsRunning(false);
     setProgress(0);
-    
+
     // Clear the interval
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -156,10 +159,10 @@ export function Simulations() {
       title="Simulations"
       subtitle="Run and monitor system simulations"
       primaryAction={{
-        content: isRunning ? 'Stop Simulation' : 'Start Simulation',
+        content: isRunning ? "Stop Simulation" : "Start Simulation",
         icon: isRunning ? Pause : Play,
         onAction: isRunning ? handleStop : handleStart,
-        disabled: !selectedSimulation
+        disabled: !selectedSimulation,
       }}
     >
       <Layout>
@@ -177,20 +180,20 @@ export function Simulations() {
                     </div>
                   </div>
 
-                  <p className="text-gray-600 mb-4">
-                    {sim.description}
-                  </p>
+                  <p className="text-gray-600 mb-4">{sim.description}</p>
 
                   <div className="space-y-4 mb-4">
                     {Object.entries(sim.metrics).map(([key, value]) => (
                       <div key={key}>
                         <div className="flex justify-between mb-1">
-                          <Text variant="bodySm">{key.replace(/_/g, ' ').toUpperCase()}</Text>
+                          <Text variant="bodySm">
+                            {key.replace(/_/g, " ").toUpperCase()}
+                          </Text>
                           <Text variant="bodySm">{value}</Text>
                         </div>
-                        <ProgressBar 
-                          progress={Math.min(Math.max(value / 10, 0), 100)} 
-                          size="small" 
+                        <ProgressBar
+                          progress={Math.min(Math.max(value / 10, 0), 100)}
+                          size="small"
                         />
                       </div>
                     ))}
@@ -198,7 +201,7 @@ export function Simulations() {
 
                   <div className="flex justify-between items-center mt-4">
                     <ButtonGroup>
-                      <Button 
+                      <Button
                         icon={Settings}
                         onClick={() => {
                           // TODO: Implement configure functionality
@@ -207,7 +210,7 @@ export function Simulations() {
                       >
                         Configure
                       </Button>
-                      <Button 
+                      <Button
                         icon={BarChart}
                         onClick={() => {
                           // TODO: Implement results view functionality
@@ -230,9 +233,9 @@ export function Simulations() {
               <div className="space-y-4">
                 <Select
                   label="Select Simulation"
-                  options={simulations.map(sim => ({
+                  options={simulations.map((sim) => ({
                     label: sim.name,
-                    value: sim.id
+                    value: sim.id,
                   }))}
                   value={selectedSimulation}
                   onChange={setSelectedSimulation}
@@ -274,8 +277,8 @@ export function Simulations() {
                       <Text variant="bodySm">Simulation Progress</Text>
                       <Text variant="bodySm">{progress}%</Text>
                     </div>
-                    <ProgressBar 
-                      progress={progress} 
+                    <ProgressBar
+                      progress={progress}
                       size="medium"
                       color="primary"
                     />
@@ -284,7 +287,7 @@ export function Simulations() {
 
                 <div className="flex justify-between items-center">
                   <ButtonGroup>
-                    <Button 
+                    <Button
                       icon={RotateCcw}
                       onClick={() => {
                         // Clear the interval if running
@@ -302,22 +305,22 @@ export function Simulations() {
                     >
                       Reset
                     </Button>
-                    <Button 
+                    <Button
                       icon={Settings}
                       onClick={() => {
                         // TODO: Implement settings functionality
-                        alert('Configure simulation settings');
+                        alert("Configure simulation settings");
                       }}
                     >
                       Settings
                     </Button>
                   </ButtonGroup>
-                  <Button 
-                    primary 
+                  <Button
+                    primary
                     icon={isRunning ? Pause : Play}
                     onClick={isRunning ? handleStop : handleStart}
                   >
-                    {isRunning ? 'Stop Simulation' : 'Start Simulation'}
+                    {isRunning ? "Stop Simulation" : "Start Simulation"}
                   </Button>
                 </div>
               </div>

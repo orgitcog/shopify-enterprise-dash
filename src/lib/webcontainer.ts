@@ -1,10 +1,10 @@
-import { supabase } from './supabase';
+import { supabase } from "./supabase";
 
 // Types
 export interface WebContainerConfig {
   id: string;
   name: string;
-  type: 'development' | 'testing' | 'staging' | 'production';
+  type: "development" | "testing" | "staging" | "production";
   parent_id?: string;
   resources: {
     cpu: number;
@@ -12,7 +12,7 @@ export interface WebContainerConfig {
     storage: number;
   };
   network: {
-    type: 'bridge' | 'host' | 'overlay';
+    type: "bridge" | "host" | "overlay";
     ports: number[];
     dns?: string[];
   };
@@ -20,12 +20,12 @@ export interface WebContainerConfig {
   mounts: Array<{
     source: string;
     target: string;
-    type: 'bind' | 'volume';
+    type: "bind" | "volume";
     readonly?: boolean;
   }>;
   created_at: string;
   updated_at: string;
-  status: 'running' | 'stopped' | 'error';
+  status: "running" | "stopped" | "error";
 }
 
 export interface WebContainerMetrics {
@@ -42,38 +42,44 @@ export interface WebContainerMetrics {
 export interface WebContainerNesting {
   parent_id: string;
   child_id: string;
-  relationship_type: 'development' | 'testing' | 'production';
+  relationship_type: "development" | "testing" | "production";
   created_at: string;
 }
 
 // API Functions
-export const createContainer = async (config: Omit<WebContainerConfig, 'id' | 'created_at' | 'updated_at'>): Promise<WebContainerConfig | null> => {
+export const createContainer = async (
+  config: Omit<WebContainerConfig, "id" | "created_at" | "updated_at">,
+): Promise<WebContainerConfig | null> => {
   try {
     const now = new Date().toISOString();
     const { data, error } = await supabase
-      .from('webcontainers')
-      .insert([{
-        ...config,
-        created_at: now,
-        updated_at: now
-      }])
+      .from("webcontainers")
+      .insert([
+        {
+          ...config,
+          created_at: now,
+          updated_at: now,
+        },
+      ])
       .select()
       .single();
 
     if (error) throw error;
     return data;
   } catch (error) {
-    console.error('Error creating webcontainer:', error);
+    console.error("Error creating webcontainer:", error);
     return null;
   }
 };
 
-export const getContainer = async (id: string): Promise<WebContainerConfig | null> => {
+export const getContainer = async (
+  id: string,
+): Promise<WebContainerConfig | null> => {
   try {
     const { data, error } = await supabase
-      .from('webcontainers')
-      .select('*')
-      .eq('id', id)
+      .from("webcontainers")
+      .select("*")
+      .eq("id", id)
       .single();
 
     if (error) throw error;
@@ -84,15 +90,18 @@ export const getContainer = async (id: string): Promise<WebContainerConfig | nul
   }
 };
 
-export const updateContainer = async (id: string, updates: Partial<WebContainerConfig>): Promise<WebContainerConfig | null> => {
+export const updateContainer = async (
+  id: string,
+  updates: Partial<WebContainerConfig>,
+): Promise<WebContainerConfig | null> => {
   try {
     const { data, error } = await supabase
-      .from('webcontainers')
+      .from("webcontainers")
       .update({
         ...updates,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
-      .eq('id', id)
+      .eq("id", id)
       .select()
       .single();
 
@@ -107,9 +116,9 @@ export const updateContainer = async (id: string, updates: Partial<WebContainerC
 export const deleteContainer = async (id: string): Promise<boolean> => {
   try {
     const { error } = await supabase
-      .from('webcontainers')
+      .from("webcontainers")
       .delete()
-      .eq('id', id);
+      .eq("id", id);
 
     if (error) throw error;
     return true;
@@ -120,44 +129,52 @@ export const deleteContainer = async (id: string): Promise<boolean> => {
 };
 
 // Nesting and Communication
-export const createNesting = async (parentId: string, childId: string, type: WebContainerNesting['relationship_type']): Promise<WebContainerNesting | null> => {
+export const createNesting = async (
+  parentId: string,
+  childId: string,
+  type: WebContainerNesting["relationship_type"],
+): Promise<WebContainerNesting | null> => {
   try {
     const { data, error } = await supabase
-      .from('webcontainer_nesting')
-      .insert([{
-        parent_id: parentId,
-        child_id: childId,
-        relationship_type: type,
-        created_at: new Date().toISOString()
-      }])
+      .from("webcontainer_nesting")
+      .insert([
+        {
+          parent_id: parentId,
+          child_id: childId,
+          relationship_type: type,
+          created_at: new Date().toISOString(),
+        },
+      ])
       .select()
       .single();
 
     if (error) throw error;
     return data;
   } catch (error) {
-    console.error('Error creating webcontainer nesting:', error);
+    console.error("Error creating webcontainer nesting:", error);
     return null;
   }
 };
 
-export const getNestedContainers = async (parentId: string): Promise<WebContainerConfig[]> => {
+export const getNestedContainers = async (
+  parentId: string,
+): Promise<WebContainerConfig[]> => {
   try {
     // First get the nested relationships
     const { data: nestingData, error: nestingError } = await supabase
-      .from('webcontainer_nesting')
-      .select('child_id, relationship_type, created_at')
-      .eq('parent_id', parentId);
+      .from("webcontainer_nesting")
+      .select("child_id, relationship_type, created_at")
+      .eq("parent_id", parentId);
 
     if (nestingError) throw nestingError;
     if (!nestingData || nestingData.length === 0) return [];
 
     // Then get the container details for each child
-    const childIds = nestingData.map(n => n.child_id);
+    const childIds = nestingData.map((n) => n.child_id);
     const { data, error } = await supabase
-      .from('webcontainers')
-      .select('*')
-      .in('id', childIds);
+      .from("webcontainers")
+      .select("*")
+      .in("id", childIds);
 
     if (error) throw error;
     return data || [];
@@ -168,73 +185,88 @@ export const getNestedContainers = async (parentId: string): Promise<WebContaine
 };
 
 // Metrics and Monitoring
-export const recordMetrics = async (metrics: Omit<WebContainerMetrics, 'timestamp'>): Promise<boolean> => {
+export const recordMetrics = async (
+  metrics: Omit<WebContainerMetrics, "timestamp">,
+): Promise<boolean> => {
   try {
-    const { error } = await supabase
-      .from('webcontainer_metrics')
-      .insert([{
+    const { error } = await supabase.from("webcontainer_metrics").insert([
+      {
         ...metrics,
-        timestamp: new Date().toISOString()
-      }]);
+        timestamp: new Date().toISOString(),
+      },
+    ]);
 
     if (error) throw error;
     return true;
   } catch (error) {
-    console.error('Error recording webcontainer metrics:', error);
+    console.error("Error recording webcontainer metrics:", error);
     return false;
   }
 };
 
-export const getMetrics = async (containerId: string, timeRange: { start: string; end: string }): Promise<WebContainerMetrics[]> => {
+export const getMetrics = async (
+  containerId: string,
+  timeRange: { start: string; end: string },
+): Promise<WebContainerMetrics[]> => {
   try {
     const { data, error } = await supabase
-      .from('webcontainer_metrics')
-      .select('*')
-      .eq('container_id', containerId)
-      .gte('timestamp', timeRange.start)
-      .lte('timestamp', timeRange.end)
-      .order('timestamp', { ascending: true });
+      .from("webcontainer_metrics")
+      .select("*")
+      .eq("container_id", containerId)
+      .gte("timestamp", timeRange.start)
+      .lte("timestamp", timeRange.end)
+      .order("timestamp", { ascending: true });
 
     if (error) throw error;
     return data || [];
   } catch (error) {
-    console.error(`Error fetching metrics for container ${containerId}:`, error);
+    console.error(
+      `Error fetching metrics for container ${containerId}:`,
+      error,
+    );
     return [];
   }
 };
 
 // Communication Utilities
-export const sendMessage = async (fromId: string, toId: string, message: any): Promise<boolean> => {
+export const sendMessage = async (
+  fromId: string,
+  toId: string,
+  message: any,
+): Promise<boolean> => {
   try {
-    const { error } = await supabase
-      .from('webcontainer_messages')
-      .insert([{
+    const { error } = await supabase.from("webcontainer_messages").insert([
+      {
         from_container: fromId,
         to_container: toId,
         message,
-        sent_at: new Date().toISOString()
-      }]);
+        sent_at: new Date().toISOString(),
+      },
+    ]);
 
     if (error) throw error;
     return true;
   } catch (error) {
-    console.error('Error sending message between containers:', error);
+    console.error("Error sending message between containers:", error);
     return false;
   }
 };
 
-export const subscribeToMessages = (containerId: string, callback: (message: any) => void) => {
+export const subscribeToMessages = (
+  containerId: string,
+  callback: (message: any) => void,
+) => {
   return supabase
     .channel(`container-${containerId}`)
     .on(
-      'postgres_changes',
+      "postgres_changes",
       {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'webcontainer_messages',
-        filter: `to_container=eq.${containerId}`
+        event: "INSERT",
+        schema: "public",
+        table: "webcontainer_messages",
+        filter: `to_container=eq.${containerId}`,
       },
-      (payload) => callback(payload.new)
+      (payload) => callback(payload.new),
     )
     .subscribe();
 };

@@ -1,66 +1,73 @@
-import React, { useState } from 'react';
-import { 
-  Page, 
-  Card, 
-  Layout, 
-  Button, 
+import React, { useState } from "react";
+import {
+  Page,
+  Card,
+  Layout,
+  Button,
   ButtonGroup,
   Text,
   Badge,
   TextField,
   Select,
-  _Banner
-} from '@shopify/polaris';
-import { Code2, Play, Terminal, Package, _RefreshCw, Database } from 'lucide-react';
+  _Banner,
+} from "@shopify/polaris";
+import {
+  Code2,
+  Play,
+  Terminal,
+  Package,
+  _RefreshCw,
+  Database,
+} from "lucide-react";
 
 export function Webcontainers() {
-  const [selectedTemplate, setSelectedTemplate] = useState('node');
+  const [selectedTemplate, setSelectedTemplate] = useState("node");
   const [isRunning, setIsRunning] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
 
   const containers = [
     {
-      id: 'container1',
-      name: 'Development Environment',
-      template: 'node',
-      status: 'running',
+      id: "container1",
+      name: "Development Environment",
+      template: "node",
+      status: "running",
       resources: {
         cpu: 25,
         memory: 512,
-        storage: 1024
-      }
+        storage: 1024,
+      },
     },
     {
-      id: 'container2',
-      name: 'Test Environment',
-      template: 'python',
-      status: 'stopped',
+      id: "container2",
+      name: "Test Environment",
+      template: "python",
+      status: "stopped",
       resources: {
         cpu: 50,
         memory: 1024,
-        storage: 2048
-      }
+        storage: 2048,
+      },
     },
     {
-      id: 'container3',
-      name: 'Database Container',
-      template: 'postgres',
-      status: 'running',
+      id: "container3",
+      name: "Database Container",
+      template: "postgres",
+      status: "running",
       resources: {
         cpu: 75,
         memory: 2048,
-        storage: 5120
-      }
-    }
+        storage: 5120,
+      },
+    },
   ];
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'running':
+      case "running":
         return <Badge status="success">Running</Badge>;
-      case 'stopped':
+      case "stopped":
         return <Badge status="critical">Stopped</Badge>;
-      case 'starting':
+      case "starting":
         return <Badge status="attention">Starting</Badge>;
       default:
         return <Badge>{status}</Badge>;
@@ -69,17 +76,25 @@ export function Webcontainers() {
 
   const handleStart = () => {
     setIsRunning(true);
-    setLogs(prev => [...prev, '> Starting container...', '> Installing dependencies...']);
-    
+    setLogs((prev) => [
+      ...prev,
+      "> Starting container...",
+      "> Installing dependencies...",
+    ]);
+
     // Simulate container startup
     setTimeout(() => {
-      setLogs(prev => [...prev, '> Container started successfully!']);
+      setLogs((prev) => [...prev, "> Container started successfully!"]);
     }, 2000);
   };
 
   const handleStop = () => {
     setIsRunning(false);
-    setLogs(prev => [...prev, '> Stopping container...', '> Container stopped.']);
+    setLogs((prev) => [
+      ...prev,
+      "> Stopping container...",
+      "> Container stopped.",
+    ]);
   };
 
   return (
@@ -87,9 +102,9 @@ export function Webcontainers() {
       title="Webcontainers"
       subtitle="Manage development environments in the browser"
       primaryAction={{
-        content: 'Create Container',
+        content: "Create Container",
         icon: Code2,
-        onAction: () => console.log('Create container')
+        onAction: () => console.log("Create container"),
       }}
     >
       <Layout>
@@ -116,32 +131,44 @@ export function Webcontainers() {
                         <Text variant="bodySm">CPU Usage</Text>
                         <Text variant="bodySm">{container.resources.cpu}%</Text>
                       </div>
-                      <ProgressBar 
-                        progress={container.resources.cpu} 
-                        size="small" 
-                        color={container.resources.cpu > 80 ? 'critical' : 'success'}
+                      <ProgressBar
+                        progress={container.resources.cpu}
+                        size="small"
+                        color={
+                          container.resources.cpu > 80 ? "critical" : "success"
+                        }
                       />
                     </div>
 
                     <div>
                       <div className="flex justify-between mb-1">
                         <Text variant="bodySm">Memory</Text>
-                        <Text variant="bodySm">{container.resources.memory}MB</Text>
+                        <Text variant="bodySm">
+                          {container.resources.memory}MB
+                        </Text>
                       </div>
-                      <ProgressBar 
-                        progress={Math.min(Math.max(container.resources.memory / 40, 0), 100)} 
-                        size="small" 
+                      <ProgressBar
+                        progress={Math.min(
+                          Math.max(container.resources.memory / 40, 0),
+                          100,
+                        )}
+                        size="small"
                       />
                     </div>
 
                     <div>
                       <div className="flex justify-between mb-1">
                         <Text variant="bodySm">Storage</Text>
-                        <Text variant="bodySm">{container.resources.storage}MB</Text>
+                        <Text variant="bodySm">
+                          {container.resources.storage}MB
+                        </Text>
                       </div>
-                      <ProgressBar 
-                        progress={Math.min(Math.max(container.resources.storage / 100, 0), 100)} 
-                        size="small" 
+                      <ProgressBar
+                        progress={Math.min(
+                          Math.max(container.resources.storage / 100, 0),
+                          100,
+                        )}
+                        size="small"
                       />
                     </div>
                   </div>
@@ -149,7 +176,7 @@ export function Webcontainers() {
                   <div className="flex justify-between items-center mt-4">
                     <Badge>{container.template}</Badge>
                     <ButtonGroup>
-                      <Button 
+                      <Button
                         icon={Terminal}
                         onClick={() => {
                           // TODO: Implement terminal functionality
@@ -158,15 +185,17 @@ export function Webcontainers() {
                       >
                         Terminal
                       </Button>
-                      <Button 
-                        icon={container.status === 'running' ? Pause : Play}
+                      <Button
+                        icon={container.status === "running" ? Pause : Play}
                         onClick={() => {
                           // TODO: Implement container toggle functionality
-                          alert(`Toggle container ${container.id}: ${container.status === 'running' ? 'Stop' : 'Start'}`);
+                          alert(
+                            `Toggle container ${container.id}: ${container.status === "running" ? "Stop" : "Start"}`,
+                          );
                         }}
                         primary
                       >
-                        {container.status === 'running' ? 'Stop' : 'Start'}
+                        {container.status === "running" ? "Stop" : "Start"}
                       </Button>
                     </ButtonGroup>
                   </div>
@@ -183,11 +212,11 @@ export function Webcontainers() {
                 <Select
                   label="Template"
                   options={[
-                    { label: 'Node.js', value: 'node' },
-                    { label: 'Python', value: 'python' },
-                    { label: 'PostgreSQL', value: 'postgres' },
-                    { label: 'Redis', value: 'redis' },
-                    { label: 'MongoDB', value: 'mongodb' }
+                    { label: "Node.js", value: "node" },
+                    { label: "Python", value: "python" },
+                    { label: "PostgreSQL", value: "postgres" },
+                    { label: "Redis", value: "redis" },
+                    { label: "MongoDB", value: "mongodb" },
                   ]}
                   value={selectedTemplate}
                   onChange={setSelectedTemplate}
@@ -219,25 +248,25 @@ export function Webcontainers() {
 
                 <div className="flex justify-between items-center">
                   <ButtonGroup>
-                    <Button 
+                    <Button
                       icon={Package}
-                      onClick={() => console.log('Configure packages')}
+                      onClick={() => console.log("Configure packages")}
                     >
                       Packages
                     </Button>
-                    <Button 
+                    <Button
                       icon={Database}
-                      onClick={() => console.log('Configure volumes')}
+                      onClick={() => console.log("Configure volumes")}
                     >
                       Volumes
                     </Button>
                   </ButtonGroup>
-                  <Button 
-                    primary 
+                  <Button
+                    primary
                     icon={isRunning ? Pause : Play}
                     onClick={isRunning ? handleStop : handleStart}
                   >
-                    {isRunning ? 'Stop Container' : 'Start Container'}
+                    {isRunning ? "Stop Container" : "Start Container"}
                   </Button>
                 </div>
               </div>

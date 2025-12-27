@@ -1,52 +1,60 @@
-import React, { useState } from 'react';
-import { 
-  Page, 
-  Card, 
-  Layout, 
-  Button, 
+import React, { useState } from "react";
+import {
+  Page,
+  Card,
+  Layout,
+  Button,
   ButtonGroup,
   Text,
   TextField,
   Select,
   _DropZone,
   Stack,
-  _Banner
-} from '@shopify/polaris';
-import { 
-  DndContext, 
+  _Banner,
+} from "@shopify/polaris";
+import {
+  DndContext,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent
-} from '@dnd-kit/core';
+  DragEndEvent,
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { BarChart, _LineChart, _PieChart, Download, Save, Play, Settings } from 'lucide-react';
+} from "@dnd-kit/sortable";
+import {
+  BarChart,
+  _LineChart,
+  _PieChart,
+  Download,
+  Save,
+  Play,
+  Settings,
+} from "lucide-react";
 
 interface ReportComponent {
   id: string;
-  type: 'chart' | 'table' | 'metric' | 'filter';
+  type: "chart" | "table" | "metric" | "filter";
   title: string;
   config: Record<string, any>;
 }
 
 export function ReportBuilder() {
-  const [reportName, setReportName] = useState('New Report');
+  const [reportName, setReportName] = useState("New Report");
   const [components, setComponents] = useState<ReportComponent[]>([]);
-  const [selectedDataSource, setSelectedDataSource] = useState('orders');
+  const [selectedDataSource, setSelectedDataSource] = useState("orders");
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -61,19 +69,19 @@ export function ReportBuilder() {
     }
   };
 
-  const addComponent = (type: ReportComponent['type']) => {
+  const addComponent = (type: ReportComponent["type"]) => {
     const newComponent: ReportComponent = {
       id: `component-${Date.now()}`,
       type,
       title: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
-      config: {}
+      config: {},
     };
     setComponents([...components, newComponent]);
   };
 
   const renderComponentPreview = (component: ReportComponent) => {
     switch (component.type) {
-      case 'chart':
+      case "chart":
         return (
           <div className="bg-gray-50 p-4 rounded-lg min-h-[200px] flex items-center justify-center">
             <BarChart className="w-8 h-8 text-gray-400" />
@@ -82,14 +90,18 @@ export function ReportBuilder() {
             </Text>
           </div>
         );
-      case 'table':
+      case "table":
         return (
           <div className="bg-gray-50 p-4 rounded-lg min-h-[200px]">
             <table className="min-w-full">
               <thead>
                 <tr>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Column 1</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Column 2</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                    Column 1
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                    Column 2
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -101,22 +113,26 @@ export function ReportBuilder() {
             </table>
           </div>
         );
-      case 'metric':
+      case "metric":
         return (
           <div className="bg-gray-50 p-4 rounded-lg">
-            <Text variant="headingLg" as="p">$12,345</Text>
-            <Text variant="bodySm" as="p" color="subdued">Sample Metric</Text>
+            <Text variant="headingLg" as="p">
+              $12,345
+            </Text>
+            <Text variant="bodySm" as="p" color="subdued">
+              Sample Metric
+            </Text>
           </div>
         );
-      case 'filter':
+      case "filter":
         return (
           <div className="bg-gray-50 p-4 rounded-lg">
             <Select
               label="Filter"
               options={[
-                {label: 'All', value: 'all'},
-                {label: 'Last 7 days', value: '7d'},
-                {label: 'Last 30 days', value: '30d'}
+                { label: "All", value: "all" },
+                { label: "Last 7 days", value: "7d" },
+                { label: "Last 30 days", value: "30d" },
               ]}
               value="all"
               onChange={() => {}}
@@ -133,9 +149,9 @@ export function ReportBuilder() {
       title="Report Builder"
       subtitle="Create custom reports by dragging and dropping components"
       primaryAction={{
-        content: isPreviewMode ? 'Edit Report' : 'Preview Report',
+        content: isPreviewMode ? "Edit Report" : "Preview Report",
         icon: isPreviewMode ? Settings : Play,
-        onAction: () => setIsPreviewMode(!isPreviewMode)
+        onAction: () => setIsPreviewMode(!isPreviewMode),
       }}
     >
       <Layout>
@@ -151,7 +167,9 @@ export function ReportBuilder() {
                 />
                 <ButtonGroup>
                   <Button icon={Save}>Save Draft</Button>
-                  <Button icon={Download} primary>Export</Button>
+                  <Button icon={Download} primary>
+                    Export
+                  </Button>
                 </ButtonGroup>
               </div>
 
@@ -159,10 +177,10 @@ export function ReportBuilder() {
                 <Select
                   label="Data Source"
                   options={[
-                    {label: 'Orders', value: 'orders'},
-                    {label: 'Products', value: 'products'},
-                    {label: 'Customers', value: 'customers'},
-                    {label: 'Inventory', value: 'inventory'}
+                    { label: "Orders", value: "orders" },
+                    { label: "Products", value: "products" },
+                    { label: "Customers", value: "customers" },
+                    { label: "Inventory", value: "inventory" },
                   ]}
                   value={selectedDataSource}
                   onChange={setSelectedDataSource}
@@ -171,18 +189,23 @@ export function ReportBuilder() {
 
               {!isPreviewMode && (
                 <div className="mb-6">
-                  <Text variant="headingSm" as="h3" className="mb-4">Add Components</Text>
+                  <Text variant="headingSm" as="h3" className="mb-4">
+                    Add Components
+                  </Text>
                   <ButtonGroup>
-                    <Button onClick={() => addComponent('chart')} icon={BarChart}>
+                    <Button
+                      onClick={() => addComponent("chart")}
+                      icon={BarChart}
+                    >
                       Add Chart
                     </Button>
-                    <Button onClick={() => addComponent('table')}>
+                    <Button onClick={() => addComponent("table")}>
                       Add Table
                     </Button>
-                    <Button onClick={() => addComponent('metric')}>
+                    <Button onClick={() => addComponent("metric")}>
                       Add Metric
                     </Button>
-                    <Button onClick={() => addComponent('filter')}>
+                    <Button onClick={() => addComponent("filter")}>
                       Add Filter
                     </Button>
                   </ButtonGroup>
@@ -207,17 +230,27 @@ export function ReportBuilder() {
                               label="Component Title"
                               value={component.title}
                               onChange={(value) => {
-                                const updatedComponents = components.map(c => 
-                                  c.id === component.id ? { ...c, title: value } : c
+                                const updatedComponents = components.map((c) =>
+                                  c.id === component.id
+                                    ? { ...c, title: value }
+                                    : c,
                                 );
                                 setComponents(updatedComponents);
                               }}
                               autoComplete="off"
                             />
                             {!isPreviewMode && (
-                              <Button plain destructive onClick={() => {
-                                setComponents(components.filter(c => c.id !== component.id));
-                              }}>
+                              <Button
+                                plain
+                                destructive
+                                onClick={() => {
+                                  setComponents(
+                                    components.filter(
+                                      (c) => c.id !== component.id,
+                                    ),
+                                  );
+                                }}
+                              >
                                 Remove
                               </Button>
                             )}
@@ -235,8 +268,14 @@ export function ReportBuilder() {
                   <Text variant="headingMd" as="p" color="subdued">
                     Drag and drop components here to build your report
                   </Text>
-                  <Text variant="bodySm" as="p" color="subdued" className="mt-2">
-                    Start by adding a chart, table, or metric from the toolbar above
+                  <Text
+                    variant="bodySm"
+                    as="p"
+                    color="subdued"
+                    className="mt-2"
+                  >
+                    Start by adding a chart, table, or metric from the toolbar
+                    above
                   </Text>
                 </div>
               )}
@@ -251,10 +290,10 @@ export function ReportBuilder() {
                 <Select
                   label="Update Frequency"
                   options={[
-                    {label: 'Real-time', value: 'realtime'},
-                    {label: 'Hourly', value: 'hourly'},
-                    {label: 'Daily', value: 'daily'},
-                    {label: 'Weekly', value: 'weekly'}
+                    { label: "Real-time", value: "realtime" },
+                    { label: "Hourly", value: "hourly" },
+                    { label: "Daily", value: "daily" },
+                    { label: "Weekly", value: "weekly" },
                   ]}
                   value="realtime"
                   onChange={() => {}}
@@ -262,9 +301,9 @@ export function ReportBuilder() {
                 <Select
                   label="Export Format"
                   options={[
-                    {label: 'PDF', value: 'pdf'},
-                    {label: 'Excel', value: 'excel'},
-                    {label: 'CSV', value: 'csv'}
+                    { label: "PDF", value: "pdf" },
+                    { label: "Excel", value: "excel" },
+                    { label: "CSV", value: "csv" },
                   ]}
                   value="pdf"
                   onChange={() => {}}
@@ -282,9 +321,9 @@ export function ReportBuilder() {
                 <Select
                   label="Visibility"
                   options={[
-                    {label: 'Private', value: 'private'},
-                    {label: 'Team', value: 'team'},
-                    {label: 'Organization', value: 'org'}
+                    { label: "Private", value: "private" },
+                    { label: "Team", value: "team" },
+                    { label: "Organization", value: "org" },
                   ]}
                   value="private"
                   onChange={() => {}}
@@ -303,10 +342,10 @@ export function ReportBuilder() {
                 <Select
                   label="Schedule"
                   options={[
-                    {label: 'Never', value: 'never'},
-                    {label: 'Daily', value: 'daily'},
-                    {label: 'Weekly', value: 'weekly'},
-                    {label: 'Monthly', value: 'monthly'}
+                    { label: "Never", value: "never" },
+                    { label: "Daily", value: "daily" },
+                    { label: "Weekly", value: "weekly" },
+                    { label: "Monthly", value: "monthly" },
                   ]}
                   value="never"
                   onChange={() => {}}

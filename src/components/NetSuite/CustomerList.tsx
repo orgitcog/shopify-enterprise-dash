@@ -1,53 +1,61 @@
-import React, { useState } from 'react';
-import { 
-  Card, 
-  ResourceList, 
-  ResourceItem, 
-  Text, 
-  Badge, 
-  Button, 
+import React, { useState } from "react";
+import {
+  Card,
+  ResourceList,
+  ResourceItem,
+  Text,
+  Badge,
+  Button,
   Filters,
   ButtonGroup,
   EmptySearchResult,
   Spinner,
-  Pagination
-} from '@shopify/polaris';
-import { useNetSuiteCustomers } from '../../hooks/useNetSuiteData';
-import { NetSuiteCustomer } from '../../lib/netsuite';
-import { Building, User, Globe, _Search } from 'lucide-react';
-import { format, parseISO } from 'date-fns';
+  Pagination,
+} from "@shopify/polaris";
+import { useNetSuiteCustomers } from "../../hooks/useNetSuiteData";
+import { NetSuiteCustomer } from "../../lib/netsuite";
+import { Building, User, Globe, _Search } from "lucide-react";
+import { format, parseISO } from "date-fns";
 
 export function CustomerList() {
-  const [searchValue, setSearchValue] = useState('');
-  const [selectedSubsidiary, setSelectedSubsidiary] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedSubsidiary, setSelectedSubsidiary] = useState<string | null>(
+    null,
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   const { data: customers, isLoading, error } = useNetSuiteCustomers();
 
   // Filter customers based on search and subsidiary
-  const filteredCustomers = customers ? customers.filter(customer => {
-    const matchesSearch = 
-      customer.companyName.toLowerCase().includes(searchValue.toLowerCase()) || 
-      customer.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-      customer.entityId.toLowerCase().includes(searchValue.toLowerCase());
-    
-    const matchesSubsidiary = !selectedSubsidiary || customer.subsidiary.id === selectedSubsidiary;
-    
-    return matchesSearch && matchesSubsidiary;
-  }) : [];
+  const filteredCustomers = customers
+    ? customers.filter((customer) => {
+        const matchesSearch =
+          customer.companyName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          customer.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+          customer.entityId.toLowerCase().includes(searchValue.toLowerCase());
+
+        const matchesSubsidiary =
+          !selectedSubsidiary || customer.subsidiary.id === selectedSubsidiary;
+
+        return matchesSearch && matchesSubsidiary;
+      })
+    : [];
 
   // Get unique subsidiaries for filter
-  const subsidiaries = customers 
-    ? [...new Set(customers.map(customer => customer.subsidiary))]
-        .sort((a, b) => a.name.localeCompare(b.name))
+  const subsidiaries = customers
+    ? [...new Set(customers.map((customer) => customer.subsidiary))].sort(
+        (a, b) => a.name.localeCompare(b.name),
+      )
     : [];
-  
+
   // Pagination calculations
   const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
   const currentPageCustomers = filteredCustomers.slice(
-    (currentPage - 1) * itemsPerPage, 
-    currentPage * itemsPerPage
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
   );
 
   const handleSearchChange = (value: string) => {
@@ -62,7 +70,7 @@ export function CustomerList() {
 
   // Format date for display
   const formatDate = (dateString: string) => {
-    return format(parseISO(dateString), 'MMM d, yyyy');
+    return format(parseISO(dateString), "MMM d, yyyy");
   };
 
   if (isLoading) {
@@ -83,7 +91,9 @@ export function CustomerList() {
       <Card sectioned title="NetSuite Customers">
         <div className="bg-red-50 text-red-800 p-4 rounded">
           <p className="font-medium">Error loading customers</p>
-          <p className="text-sm mt-1">{error instanceof Error ? error.message : 'Unknown error'}</p>
+          <p className="text-sm mt-1">
+            {error instanceof Error ? error.message : "Unknown error"}
+          </p>
         </div>
       </Card>
     );
@@ -93,7 +103,9 @@ export function CustomerList() {
     <Card>
       <Card.Section>
         <div className="flex justify-between items-center mb-4">
-          <Text variant="headingMd" as="h2">NetSuite OneWorld Customers</Text>
+          <Text variant="headingMd" as="h2">
+            NetSuite OneWorld Customers
+          </Text>
           <ButtonGroup>
             <Button>Export</Button>
             <Button primary>Import from NetSuite</Button>
@@ -107,20 +119,20 @@ export function CustomerList() {
           queryPlaceholder="Search customers..."
           filters={[
             {
-              key: 'subsidiary',
-              label: 'Subsidiary',
+              key: "subsidiary",
+              label: "Subsidiary",
               filter: (
                 <div className="flex flex-wrap gap-2">
-                  <Button 
-                    onClick={() => handleSubsidiaryChange(null)} 
+                  <Button
+                    onClick={() => handleSubsidiaryChange(null)}
                     pressed={selectedSubsidiary === null}
                   >
                     All Subsidiaries
                   </Button>
-                  {subsidiaries.map(subsidiary => (
-                    <Button 
+                  {subsidiaries.map((subsidiary) => (
+                    <Button
                       key={subsidiary.id}
-                      onClick={() => handleSubsidiaryChange(subsidiary.id)} 
+                      onClick={() => handleSubsidiaryChange(subsidiary.id)}
                       pressed={selectedSubsidiary === subsidiary.id}
                     >
                       {subsidiary.name}
@@ -129,32 +141,47 @@ export function CustomerList() {
                 </div>
               ),
               shortcut: true,
-            }
+            },
           ]}
           onQueryChange={handleSearchChange}
-          onQueryClear={() => setSearchValue('')}
+          onQueryClear={() => setSearchValue("")}
         />
       </Card.Section>
 
       <Card.Section>
         {currentPageCustomers.length > 0 ? (
           <ResourceList
-            resourceName={{ singular: 'customer', plural: 'customers' }}
+            resourceName={{ singular: "customer", plural: "customers" }}
             items={currentPageCustomers}
             renderItem={(customer: NetSuiteCustomer) => {
-              const { id, companyName, email, phone, subsidiary, entityId, isPerson, firstName, lastName, dateCreated, lastModifiedDate } = customer;
-              
+              const {
+                id,
+                companyName,
+                email,
+                phone,
+                subsidiary,
+                entityId,
+                isPerson,
+                firstName,
+                lastName,
+                dateCreated,
+                lastModifiedDate,
+              } = customer;
+
               return (
                 <ResourceItem
                   id={id}
                   accessibilityLabel={`View details for ${companyName}`}
-                  media={isPerson ? 
-                    <div className="bg-blue-100 p-2 rounded-full">
-                      <User className="w-5 h-5 text-blue-700" />
-                    </div> : 
-                    <div className="bg-purple-100 p-2 rounded-full">
-                      <Building className="w-5 h-5 text-purple-700" />
-                    </div>
+                  media={
+                    isPerson ? (
+                      <div className="bg-blue-100 p-2 rounded-full">
+                        <User className="w-5 h-5 text-blue-700" />
+                      </div>
+                    ) : (
+                      <div className="bg-purple-100 p-2 rounded-full">
+                        <Building className="w-5 h-5 text-purple-700" />
+                      </div>
+                    )
                   }
                 >
                   <div className="flex justify-between items-start">
@@ -188,7 +215,10 @@ export function CustomerList() {
                           <Button url={`/erp/customers/${id}`} size="slim">
                             View Details
                           </Button>
-                          <Button url={`/erp/transactions?customer=${id}`} size="slim">
+                          <Button
+                            url={`/erp/transactions?customer=${id}`}
+                            size="slim"
+                          >
                             View Transactions
                           </Button>
                         </ButtonGroup>

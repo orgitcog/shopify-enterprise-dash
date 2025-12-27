@@ -1,29 +1,29 @@
-import React from 'react';
-import { 
-  Page, 
-  Card, 
-  Layout, 
-  Button, 
+import React from "react";
+import {
+  Page,
+  Card,
+  Layout,
+  Button,
   ButtonGroup,
   Text,
   Badge,
   Link,
-  ProgressBar
-} from '@shopify/polaris';
-import { Network, Wifi, Globe, Activity, _Server } from 'lucide-react';
-import { useNetworks, useNetworkMetrics } from '../../hooks/useNetticaData';
+  ProgressBar,
+} from "@shopify/polaris";
+import { Network, Wifi, Globe, Activity, _Server } from "lucide-react";
+import { useNetworks, useNetworkMetrics } from "../../hooks/useNetticaData";
 
 export function Networks() {
   const { data: networks, _isLoading, error } = useNetworks();
-  const { data: _metrics } = useNetworkMetrics('net1');
+  const { data: _metrics } = useNetworkMetrics("net1");
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active':
+      case "active":
         return <Badge status="success">Active</Badge>;
-      case 'inactive':
+      case "inactive":
         return <Badge status="critical">Inactive</Badge>;
-      case 'pending':
+      case "pending":
         return <Badge status="attention">Pending</Badge>;
       default:
         return <Badge>{status}</Badge>;
@@ -32,11 +32,11 @@ export function Networks() {
 
   const getNetworkIcon = (type: string) => {
     switch (type) {
-      case 'mesh':
+      case "mesh":
         return <Network className="w-6 h-6" />;
-      case 'hub-spoke':
+      case "hub-spoke":
         return <Wifi className="w-6 h-6" />;
-      case 'point-to-point':
+      case "point-to-point":
         return <Activity className="w-6 h-6" />;
       default:
         return <Globe className="w-6 h-6" />;
@@ -53,7 +53,8 @@ export function Networks() {
                 Error loading networks
               </Text>
               <p className="mt-2 text-gray-600">
-                There was a problem loading the network data. Please try again later.
+                There was a problem loading the network data. Please try again
+                later.
               </p>
               <Button onClick={() => window.location.reload()} className="mt-4">
                 Retry
@@ -70,11 +71,11 @@ export function Networks() {
       title="Network Management"
       subtitle="Monitor and manage network infrastructure"
       primaryAction={{
-        content: 'Add Network',
+        content: "Add Network",
         onAction: () => {
           // TODO: Implement add network functionality
-          alert('Add Network functionality not yet implemented');
-        }
+          alert("Add Network functionality not yet implemented");
+        },
       }}
     >
       <Layout>
@@ -97,9 +98,7 @@ export function Networks() {
                     </div>
                   </div>
 
-                  <p className="text-gray-600 mb-4">
-                    {network.description}
-                  </p>
+                  <p className="text-gray-600 mb-4">{network.description}</p>
 
                   <div className="space-y-4 mb-4">
                     <div>
@@ -107,20 +106,28 @@ export function Networks() {
                         <Text variant="bodySm">Nodes</Text>
                         <Text variant="bodySm">{network.nodes}</Text>
                       </div>
-                      <ProgressBar 
-                        progress={Math.min(Math.max(network.nodes / 20 * 100, 0), 100)} 
-                        size="small" 
+                      <ProgressBar
+                        progress={Math.min(
+                          Math.max((network.nodes / 20) * 100, 0),
+                          100,
+                        )}
+                        size="small"
                       />
                     </div>
 
                     <div>
                       <div className="flex justify-between mb-1">
                         <Text variant="bodySm">Bandwidth Usage</Text>
-                        <Text variant="bodySm">{network.bandwidth_usage.toFixed(1)} Mbps</Text>
+                        <Text variant="bodySm">
+                          {network.bandwidth_usage.toFixed(1)} Mbps
+                        </Text>
                       </div>
-                      <ProgressBar 
-                        progress={Math.min(Math.max(network.bandwidth_usage / 1000 * 100, 0), 100)} 
-                        size="small" 
+                      <ProgressBar
+                        progress={Math.min(
+                          Math.max((network.bandwidth_usage / 1000) * 100, 0),
+                          100,
+                        )}
+                        size="small"
                         color="success"
                       />
                     </div>
@@ -136,14 +143,10 @@ export function Networks() {
                   </div>
 
                   <div className="flex justify-between items-center mt-4">
-                    <Link url={`/networks/${network.id}`}>
-                      View Details
-                    </Link>
+                    <Link url={`/networks/${network.id}`}>View Details</Link>
                     <ButtonGroup>
                       <Button>Configure</Button>
-                      <Button primary>
-                        Monitor
-                      </Button>
+                      <Button primary>Monitor</Button>
                     </ButtonGroup>
                   </div>
                 </Card.Section>

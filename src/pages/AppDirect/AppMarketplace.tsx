@@ -1,6 +1,6 @@
-import React from 'react';
-import { Page } from '@shopify/polaris';
-import { AppList } from '../../components/AppDirect/AppList';
+import React from "react";
+import { Page } from "@shopify/polaris";
+import { AppList } from "../../components/AppDirect/AppList";
 
 export function AppMarketplace() {
   return (

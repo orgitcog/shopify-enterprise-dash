@@ -1,15 +1,18 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useTestMode } from '../context/TestModeContext';
-import { Spinner } from '@shopify/polaris';
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useTestMode } from "../context/TestModeContext";
+import { Spinner } from "@shopify/polaris";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRole?: string;
 }
 
-export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  children,
+  requiredRole,
+}: ProtectedRouteProps) {
   const { user, loading } = useAuth();
   const { isTestMode } = useTestMode();
   const location = useLocation();

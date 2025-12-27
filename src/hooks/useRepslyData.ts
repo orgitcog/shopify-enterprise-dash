@@ -1,14 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
-import { 
-  repslyApi, 
-  getMockData, 
-  RepslyRepresentative, 
-  RepslyClient, 
-  RepslyVisit, 
+import { useState, useEffect, useCallback } from "react";
+import {
+  repslyApi,
+  getMockData,
+  RepslyRepresentative,
+  RepslyClient,
+  RepslyVisit,
   RepslyInventoryItem,
   RepslyCredentials,
-  syncRepslyWithShopify
-} from '../lib/repsly';
+  syncRepslyWithShopify,
+} from "../lib/repsly";
 
 // Validation helper functions
 const isValidDateString = (dateString: string): boolean => {
@@ -25,7 +25,9 @@ const isValidId = (id: string): boolean => {
 
 // Hook for managing Repsly authentication
 export const useRepslyAuth = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(repslyApi.hasCredentials());
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    repslyApi.hasCredentials(),
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +41,8 @@ export const useRepslyAuth = () => {
       setIsAuthenticated(true);
       return { success: true };
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Authentication failed';
+      const errorMessage =
+        err instanceof Error ? err.message : "Authentication failed";
       setError(errorMessage);
       repslyApi.clearCredentials();
       setIsAuthenticated(false);
@@ -60,13 +63,15 @@ export const useRepslyAuth = () => {
     isLoading,
     error,
     login,
-    logout
+    logout,
   };
 };
 
 // Hook for fetching and managing representatives
 export const useRepresentatives = (useMockData: boolean = false) => {
-  const [representatives, setRepresentatives] = useState<RepslyRepresentative[]>([]);
+  const [representatives, setRepresentatives] = useState<
+    RepslyRepresentative[]
+  >([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -82,7 +87,8 @@ export const useRepresentatives = (useMockData: boolean = false) => {
         setRepresentatives(reps);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch representatives';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to fetch representatives";
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -97,7 +103,7 @@ export const useRepresentatives = (useMockData: boolean = false) => {
     representatives,
     isLoading,
     error,
-    refetch: fetchRepresentatives
+    refetch: fetchRepresentatives,
   };
 };
 
@@ -107,33 +113,38 @@ export const useClients = (useMockData: boolean = false) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchClients = useCallback(async (search?: string) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      if (useMockData) {
-        const { mockClients } = getMockData();
-        if (search) {
-          const filtered = mockClients.filter(client => 
-            client.name.toLowerCase().includes(search.toLowerCase()) ||
-            client.address.toLowerCase().includes(search.toLowerCase()) ||
-            client.city.toLowerCase().includes(search.toLowerCase())
-          );
-          setClients(filtered);
+  const fetchClients = useCallback(
+    async (search?: string) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        if (useMockData) {
+          const { mockClients } = getMockData();
+          if (search) {
+            const filtered = mockClients.filter(
+              (client) =>
+                client.name.toLowerCase().includes(search.toLowerCase()) ||
+                client.address.toLowerCase().includes(search.toLowerCase()) ||
+                client.city.toLowerCase().includes(search.toLowerCase()),
+            );
+            setClients(filtered);
+          } else {
+            setClients(mockClients);
+          }
         } else {
-          setClients(mockClients);
+          const fetchedClients = await repslyApi.getClients(100, 0, search);
+          setClients(fetchedClients);
         }
-      } else {
-        const fetchedClients = await repslyApi.getClients(100, 0, search);
-        setClients(fetchedClients);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to fetch clients";
+        setError(errorMessage);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch clients';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [useMockData]);
+    },
+    [useMockData],
+  );
 
   useEffect(() => {
     fetchClients();
@@ -144,7 +155,7 @@ export const useClients = (useMockData: boolean = false) => {
     isLoading,
     error,
     refetch: fetchClients,
-    search: fetchClients
+    search: fetchClients,
   };
 };
 
@@ -154,78 +165,92 @@ export const useVisits = (useMockData: boolean = false) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchVisits = useCallback(async (params?: {
-    startDate?: string;
-    endDate?: string;
-    repId?: string;
-    clientId?: string;
-    status?: string;
-  }) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      // Input validation
-      if (params?.startDate && !isValidDateString(params.startDate)) {
-        throw new Error('Invalid start date format');
-      }
-      if (params?.endDate && !isValidDateString(params.endDate)) {
-        throw new Error('Invalid end date format');
-      }
-      if (params?.repId && !isValidId(params.repId)) {
-        throw new Error('Invalid rep ID format');
-      }
-      if (params?.clientId && !isValidId(params.clientId)) {
-        throw new Error('Invalid client ID format');
-      }
-      
-      if (useMockData) {
-        const { mockVisits } = getMockData();
-        let filtered = [...mockVisits];
-        
-        if (params) {
-          if (params.repId) {
-            filtered = filtered.filter(visit => visit.repId === params.repId);
-          }
-          if (params.clientId) {
-            filtered = filtered.filter(visit => visit.clientId === params.clientId);
-          }
-          if (params.status) {
-            filtered = filtered.filter(visit => visit.status === params.status);
-          }
-          if (params.startDate) {
-            const startDate = new Date(params.startDate);
-            if (isNaN(startDate.getTime())) {
-              throw new Error('Invalid start date');
-            }
-            filtered = filtered.filter(visit => new Date(visit.checkInTime) >= startDate);
-          }
-          if (params.endDate) {
-            const endDate = new Date(params.endDate);
-            if (isNaN(endDate.getTime())) {
-              throw new Error('Invalid end date');
-            }
-            filtered = filtered.filter(visit => new Date(visit.checkInTime) <= endDate);
-          }
+  const fetchVisits = useCallback(
+    async (params?: {
+      startDate?: string;
+      endDate?: string;
+      repId?: string;
+      clientId?: string;
+      status?: string;
+    }) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        // Input validation
+        if (params?.startDate && !isValidDateString(params.startDate)) {
+          throw new Error("Invalid start date format");
         }
-        
-        setVisits(filtered);
-      } else {
-        const fetchedVisits = await repslyApi.getVisits(
-          params?.startDate,
-          params?.endDate,
-          params?.repId,
-          params?.clientId,
-          params?.status
-        );
-        setVisits(fetchedVisits);
+        if (params?.endDate && !isValidDateString(params.endDate)) {
+          throw new Error("Invalid end date format");
+        }
+        if (params?.repId && !isValidId(params.repId)) {
+          throw new Error("Invalid rep ID format");
+        }
+        if (params?.clientId && !isValidId(params.clientId)) {
+          throw new Error("Invalid client ID format");
+        }
+
+        if (useMockData) {
+          const { mockVisits } = getMockData();
+          let filtered = [...mockVisits];
+
+          if (params) {
+            if (params.repId) {
+              filtered = filtered.filter(
+                (visit) => visit.repId === params.repId,
+              );
+            }
+            if (params.clientId) {
+              filtered = filtered.filter(
+                (visit) => visit.clientId === params.clientId,
+              );
+            }
+            if (params.status) {
+              filtered = filtered.filter(
+                (visit) => visit.status === params.status,
+              );
+            }
+            if (params.startDate) {
+              const startDate = new Date(params.startDate);
+              if (isNaN(startDate.getTime())) {
+                throw new Error("Invalid start date");
+              }
+              filtered = filtered.filter(
+                (visit) => new Date(visit.checkInTime) >= startDate,
+              );
+            }
+            if (params.endDate) {
+              const endDate = new Date(params.endDate);
+              if (isNaN(endDate.getTime())) {
+                throw new Error("Invalid end date");
+              }
+              filtered = filtered.filter(
+                (visit) => new Date(visit.checkInTime) <= endDate,
+              );
+            }
+          }
+
+          setVisits(filtered);
+        } else {
+          const fetchedVisits = await repslyApi.getVisits(
+            params?.startDate,
+            params?.endDate,
+            params?.repId,
+            params?.clientId,
+            params?.status,
+          );
+          setVisits(fetchedVisits);
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to fetch visits";
+        setError(errorMessage);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch visits';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [useMockData]);
+    },
+    [useMockData],
+  );
 
   useEffect(() => {
     fetchVisits();
@@ -236,7 +261,7 @@ export const useVisits = (useMockData: boolean = false) => {
     isLoading,
     error,
     refetch: fetchVisits,
-    filter: fetchVisits
+    filter: fetchVisits,
   };
 };
 
@@ -246,41 +271,48 @@ export const useInventory = (useMockData: boolean = false) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchInventory = useCallback(async (clientId?: string, productId?: string) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      // Input validation
-      if (clientId && !isValidId(clientId)) {
-        throw new Error('Invalid client ID format');
-      }
-      if (productId && !isValidId(productId)) {
-        throw new Error('Invalid product ID format');
-      }
-      
-      if (useMockData) {
-        const { mockInventory } = getMockData();
-        let filtered = [...mockInventory];
-        
-        if (clientId) {
-          filtered = filtered.filter(item => item.clientId === clientId);
+  const fetchInventory = useCallback(
+    async (clientId?: string, productId?: string) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        // Input validation
+        if (clientId && !isValidId(clientId)) {
+          throw new Error("Invalid client ID format");
         }
-        if (productId) {
-          filtered = filtered.filter(item => item.productId === productId);
+        if (productId && !isValidId(productId)) {
+          throw new Error("Invalid product ID format");
         }
-        
-        setInventory(filtered);
-      } else {
-        const fetchedInventory = await repslyApi.getInventory(clientId, productId);
-        setInventory(fetchedInventory);
+
+        if (useMockData) {
+          const { mockInventory } = getMockData();
+          let filtered = [...mockInventory];
+
+          if (clientId) {
+            filtered = filtered.filter((item) => item.clientId === clientId);
+          }
+          if (productId) {
+            filtered = filtered.filter((item) => item.productId === productId);
+          }
+
+          setInventory(filtered);
+        } else {
+          const fetchedInventory = await repslyApi.getInventory(
+            clientId,
+            productId,
+          );
+          setInventory(fetchedInventory);
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to fetch inventory";
+        setError(errorMessage);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch inventory';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [useMockData]);
+    },
+    [useMockData],
+  );
 
   useEffect(() => {
     fetchInventory();
@@ -291,14 +323,17 @@ export const useInventory = (useMockData: boolean = false) => {
     isLoading,
     error,
     refetch: fetchInventory,
-    filter: fetchInventory
+    filter: fetchInventory,
   };
 };
 
 // Hook for syncing Repsly with Shopify
 export const useSyncRepslyShopify = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [result, setResult] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const syncData = useCallback(async () => {
@@ -309,7 +344,8 @@ export const useSyncRepslyShopify = () => {
       const syncResult = await syncRepslyWithShopify();
       setResult(syncResult);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to sync data';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to sync data";
       setError(errorMessage);
       setResult({ success: false, message: errorMessage });
     } finally {
@@ -321,6 +357,6 @@ export const useSyncRepslyShopify = () => {
     isLoading,
     result,
     error,
-    syncData
+    syncData,
   };
 };

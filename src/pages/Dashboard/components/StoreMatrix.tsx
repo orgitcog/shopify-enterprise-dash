@@ -1,39 +1,41 @@
-import React, { useState } from 'react';
-import { 
-  Card, 
-  ResourceList, 
+import React, { useState } from "react";
+import {
+  Card,
+  ResourceList,
   ResourceItem,
-  _Avatar, 
-  Badge, 
-  Button, 
+  _Avatar,
+  Badge,
+  Button,
   ButtonGroup,
   Pagination,
   TextField,
   EmptySearchResult,
-  Text
-} from '@shopify/polaris';
-import { useTestMode } from '../../../context/TestModeContext';
-import { Download, RefreshCw } from 'lucide-react';
+  Text,
+} from "@shopify/polaris";
+import { useTestMode } from "../../../context/TestModeContext";
+import { Download, RefreshCw } from "lucide-react";
 
 export function StoreMatrix() {
   const { organizations } = useTestMode();
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  
+
   // Flatten stores from all organizations
-  const allStores = organizations.flatMap(org => 
-    org.stores.map(store => ({
+  const allStores = organizations.flatMap((org) =>
+    org.stores.map((store) => ({
       ...store,
-      organizationName: org.name
-    }))
+      organizationName: org.name,
+    })),
   );
-  
+
   // Filter stores based on search and status
-  const filteredStores = allStores.filter(store => {
-    const matchesSearch = store.name.toLowerCase().includes(searchValue.toLowerCase()) || 
-                          store.domain.toLowerCase().includes(searchValue.toLowerCase()) ||
-                          store.organizationName.toLowerCase().includes(searchValue.toLowerCase());
-    const matchesStatus = selectedStatus === null || store.status === selectedStatus;
+  const filteredStores = allStores.filter((store) => {
+    const matchesSearch =
+      store.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      store.domain.toLowerCase().includes(searchValue.toLowerCase()) ||
+      store.organizationName.toLowerCase().includes(searchValue.toLowerCase());
+    const matchesStatus =
+      selectedStatus === null || store.status === selectedStatus;
     return matchesSearch && matchesStatus;
   });
 
@@ -47,7 +49,7 @@ export function StoreMatrix() {
 
   const refreshData = () => {
     // In a real app, this would refresh data from the API
-    console.log('Refreshing data...');
+    console.log("Refreshing data...");
   };
 
   // Format date to a readable format
@@ -58,20 +60,23 @@ export function StoreMatrix() {
 
   // Status badge component
   const StatusBadge = ({ status }: { status: string }) => {
-    let statusProps: { status: 'success' | 'critical' | 'warning' | 'new'; children: string } = {
-      status: 'new',
-      children: 'Unknown'
+    let statusProps: {
+      status: "success" | "critical" | "warning" | "new";
+      children: string;
+    } = {
+      status: "new",
+      children: "Unknown",
     };
 
     switch (status) {
-      case 'active':
-        statusProps = { status: 'success', children: 'Active' };
+      case "active":
+        statusProps = { status: "success", children: "Active" };
         break;
-      case 'inactive':
-        statusProps = { status: 'critical', children: 'Inactive' };
+      case "inactive":
+        statusProps = { status: "critical", children: "Inactive" };
         break;
-      case 'pending':
-        statusProps = { status: 'warning', children: 'Pending' };
+      case "pending":
+        statusProps = { status: "warning", children: "Pending" };
         break;
     }
 
@@ -93,14 +98,17 @@ export function StoreMatrix() {
     <>
       <Card.Section>
         <div className="flex justify-between items-center mb-4">
-          <Text variant="headingMd" as="h2">Store Performance</Text>
+          <Text variant="headingMd" as="h2">
+            Store Performance
+          </Text>
           <ButtonGroup>
-            <Button onClick={refreshData} icon={<RefreshCw className="w-4 h-4" />}>
+            <Button
+              onClick={refreshData}
+              icon={<RefreshCw className="w-4 h-4" />}
+            >
               Refresh
             </Button>
-            <Button icon={<Download className="w-4 h-4" />}>
-              Export
-            </Button>
+            <Button icon={<Download className="w-4 h-4" />}>Export</Button>
           </ButtonGroup>
         </div>
       </Card.Section>
@@ -108,7 +116,7 @@ export function StoreMatrix() {
       <Card.Section>
         <div className="mb-4">
           <ResourceList
-            resourceName={{ singular: 'store', plural: 'stores' }}
+            resourceName={{ singular: "store", plural: "stores" }}
             items={filteredStores}
             renderItem={(store) => (
               <ResourceItem
@@ -127,7 +135,9 @@ export function StoreMatrix() {
                   </div>
                   <div className="text-right">
                     <div className="mb-1">
-                      <Text variant="bodyMd">${store.metrics.revenue.toLocaleString()}</Text>
+                      <Text variant="bodyMd">
+                        ${store.metrics.revenue.toLocaleString()}
+                      </Text>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Text variant="bodySm" color="subdued">

@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Card, 
-  ResourceList, 
-  ResourceItem, 
-  _Text, 
-  Badge, 
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  ResourceList,
+  ResourceItem,
+  _Text,
+  Badge,
   Button,
   Avatar,
   Spinner,
-  EmptySearchResult
-} from '@shopify/polaris';
-import { RefreshCw, Store, Calendar, ExternalLink } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
-import { syncShopifyData } from '../../lib/shopifyApi';
+  EmptySearchResult,
+} from "@shopify/polaris";
+import { RefreshCw, Store, Calendar, ExternalLink } from "lucide-react";
+import { supabase } from "../../lib/supabase";
+import { syncShopifyData } from "../../lib/shopifyApi";
 
 interface ShopifyConnection {
   id: string;
@@ -21,7 +21,7 @@ interface ShopifyConnection {
   created_at: string;
   last_sync?: string;
   store_id: string;
-  status: 'active' | 'error' | 'pending';
+  status: "active" | "error" | "pending";
 }
 
 export function ConnectedStores() {
@@ -45,9 +45,9 @@ export function ConnectedStores() {
       setError(null);
 
       const { data, error } = await supabase
-        .from('shopify_connections')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("shopify_connections")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) {
         throw error;
@@ -55,8 +55,8 @@ export function ConnectedStores() {
 
       setConnections(data || []);
     } catch (err) {
-      setError('Failed to load connected stores');
-      console.error('Error fetching connections:', err);
+      setError("Failed to load connected stores");
+      console.error("Error fetching connections:", err);
     } finally {
       setIsLoading(false);
     }
@@ -65,33 +65,33 @@ export function ConnectedStores() {
   const handleSyncStore = async (storeId: string) => {
     try {
       setSyncingStore(storeId);
-      
+
       // In a real implementation, we would pass the specific store credentials
       // to the sync function instead of using the default ones
       const result = await syncShopifyData();
-      
+
       setSyncResult({
         id: storeId,
         success: result.success,
-        message: result.message
+        message: result.message,
       });
 
       // Update the last_sync timestamp in our local state
       if (result.success) {
-        setConnections(prev => 
-          prev.map(conn => 
-            conn.id === storeId 
-              ? { ...conn, last_sync: new Date().toISOString() } 
-              : conn
-          )
+        setConnections((prev) =>
+          prev.map((conn) =>
+            conn.id === storeId
+              ? { ...conn, last_sync: new Date().toISOString() }
+              : conn,
+          ),
         );
       }
     } catch (error) {
-      console.error('Error syncing store:', error);
+      console.error("Error syncing store:", error);
       setSyncResult({
         id: storeId,
         success: false,
-        message: 'An unexpected error occurred during sync'
+        message: "An unexpected error occurred during sync",
       });
     } finally {
       // Clear syncing state after a delay
@@ -106,7 +106,7 @@ export function ConnectedStores() {
   };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Never';
+    if (!dateString) return "Never";
     const date = new Date(dateString);
     return date.toLocaleString();
   };
@@ -130,7 +130,9 @@ export function ConnectedStores() {
         <div className="bg-red-50 text-red-800 p-4 rounded">
           <p className="font-medium">Error loading stores</p>
           <p className="text-sm mt-1">{error}</p>
-          <Button onClick={fetchConnections} className="mt-3">Try Again</Button>
+          <Button onClick={fetchConnections} className="mt-3">
+            Try Again
+          </Button>
         </div>
       </Card>
     );
@@ -146,22 +148,30 @@ export function ConnectedStores() {
         />
       ) : (
         <ResourceList
-          resourceName={{ singular: 'store', plural: 'stores' }}
+          resourceName={{ singular: "store", plural: "stores" }}
           items={connections}
           renderItem={(connection) => {
-            const { id, shop_domain, store_name, created_at, last_sync, status } = connection;
+            const {
+              id,
+              shop_domain,
+              store_name,
+              created_at,
+              last_sync,
+              status,
+            } = connection;
             const isSyncing = syncingStore === id;
-            const syncMessage = syncResult && syncResult.id === id ? syncResult : null;
-            
+            const syncMessage =
+              syncResult && syncResult.id === id ? syncResult : null;
+
             let statusBadge;
             switch (status) {
-              case 'active':
+              case "active":
                 statusBadge = <Badge status="success">Active</Badge>;
                 break;
-              case 'error':
+              case "error":
                 statusBadge = <Badge status="critical">Error</Badge>;
                 break;
-              case 'pending':
+              case "pending":
               default:
                 statusBadge = <Badge status="warning">Pending</Badge>;
                 break;
@@ -171,7 +181,12 @@ export function ConnectedStores() {
               <ResourceItem id={id}>
                 <div className="flex items-center">
                   <div className="flex-shrink-0 mr-4">
-                    <Avatar customer size="medium" name={store_name} source={`https://ui-avatars.com/api/?name=${encodeURIComponent(store_name)}&background=f3f3f3&color=5c6ac4`} />
+                    <Avatar
+                      customer
+                      size="medium"
+                      name={store_name}
+                      source={`https://ui-avatars.com/api/?name=${encodeURIComponent(store_name)}&background=f3f3f3&color=5c6ac4`}
+                    />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex justify-between">
@@ -181,7 +196,12 @@ export function ConnectedStores() {
                     <div className="flex items-center mt-1">
                       <Store className="w-4 h-4 text-gray-500 mr-1" />
                       <p className="text-sm text-gray-500">
-                        <a href={`https://${shop_domain}`} target="_blank" rel="noopener noreferrer" className="underline flex items-center">
+                        <a
+                          href={`https://${shop_domain}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline flex items-center"
+                        >
                           {shop_domain}
                           <ExternalLink className="w-3 h-3 ml-1" />
                         </a>
@@ -192,18 +212,18 @@ export function ConnectedStores() {
                         <Calendar className="w-4 h-4 mr-1" />
                         <span>Connected: {formatDate(created_at)}</span>
                       </div>
-                      <div>
-                        Last sync: {formatDate(last_sync)}
-                      </div>
+                      <div>Last sync: {formatDate(last_sync)}</div>
                     </div>
                     {syncMessage && (
-                      <div className={`mt-2 text-sm p-2 rounded ${syncMessage.success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                      <div
+                        className={`mt-2 text-sm p-2 rounded ${syncMessage.success ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}
+                      >
                         {syncMessage.message}
                       </div>
                     )}
                   </div>
                   <div className="ml-4">
-                    <Button 
+                    <Button
                       onClick={() => handleSyncStore(id)}
                       loading={isSyncing}
                       icon={<RefreshCw className="w-4 h-4" />}

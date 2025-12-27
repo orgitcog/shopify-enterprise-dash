@@ -1,37 +1,45 @@
-import React, { useState } from 'react';
-import { Card, FormLayout, TextField, Button, Banner, Text, Link } from '@shopify/polaris';
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, User } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Card,
+  FormLayout,
+  TextField,
+  Button,
+  Banner,
+  Text,
+  Link,
+} from "@shopify/polaris";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { Lock, Mail, User } from "lucide-react";
 
 export default function Signup() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [name, setName] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const { signUp, loading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
+    setErrorMessage("");
+    setSuccessMessage("");
 
     // Validate inputs
     if (!email || !password || !confirmPassword) {
-      setErrorMessage('Please fill in all required fields');
+      setErrorMessage("Please fill in all required fields");
       return;
     }
 
     if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match');
+      setErrorMessage("Passwords do not match");
       return;
     }
 
     if (password.length < 6) {
-      setErrorMessage('Password must be at least 6 characters long');
+      setErrorMessage("Password must be at least 6 characters long");
       return;
     }
 
@@ -40,14 +48,16 @@ export default function Signup() {
       if (error) {
         setErrorMessage(error.message);
       } else {
-        setSuccessMessage('Account created successfully! Please check your email to confirm your account.');
+        setSuccessMessage(
+          "Account created successfully! Please check your email to confirm your account.",
+        );
         setTimeout(() => {
-          navigate('/login');
+          navigate("/login");
         }, 3000);
       }
     } catch (error) {
-      setErrorMessage('An unexpected error occurred. Please try again later.');
-      console.error('Signup error:', error);
+      setErrorMessage("An unexpected error occurred. Please try again later.");
+      console.error("Signup error:", error);
     }
   };
 
@@ -56,19 +66,21 @@ export default function Signup() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">Create Your Account</h1>
-          <p className="text-gray-600 mt-2">Join the Shopify Enterprise Dashboard</p>
+          <p className="text-gray-600 mt-2">
+            Join the Shopify Enterprise Dashboard
+          </p>
         </div>
 
         <Card>
           <Card.Section>
             {errorMessage && (
-              <Banner status="critical" onDismiss={() => setErrorMessage('')}>
+              <Banner status="critical" onDismiss={() => setErrorMessage("")}>
                 <p>{errorMessage}</p>
               </Banner>
             )}
 
             {successMessage && (
-              <Banner status="success" onDismiss={() => setSuccessMessage('')}>
+              <Banner status="success" onDismiss={() => setSuccessMessage("")}>
                 <p>{successMessage}</p>
               </Banner>
             )}
@@ -125,8 +137,7 @@ export default function Signup() {
 
                 <div className="text-center mt-4">
                   <Text variant="bodyMd" as="p">
-                    Already have an account?{' '}
-                    <Link url="/login">Log in</Link>
+                    Already have an account? <Link url="/login">Log in</Link>
                   </Text>
                 </div>
               </FormLayout>

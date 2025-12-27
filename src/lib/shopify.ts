@@ -1,21 +1,21 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Initialize axios instance for Shopify API
 const shopifyApi = axios.create({
   baseURL: import.meta.env.VITE_SHOPIFY_ADMIN_API_URL,
   headers: {
-    'Content-Type': 'application/json',
-    'X-Shopify-Access-Token': import.meta.env.VITE_SHOPIFY_ACCESS_TOKEN
-  }
+    "Content-Type": "application/json",
+    "X-Shopify-Access-Token": import.meta.env.VITE_SHOPIFY_ACCESS_TOKEN,
+  },
 });
 
 // Initialize GraphQL client
 export const shopifyClient = axios.create({
   baseURL: `https://${import.meta.env.VITE_SHOPIFY_STORE_URL}/admin/api/2024-01/graphql.json`,
   headers: {
-    'Content-Type': 'application/json',
-    'X-Shopify-Access-Token': import.meta.env.VITE_SHOPIFY_ACCESS_TOKEN
-  }
+    "Content-Type": "application/json",
+    "X-Shopify-Access-Token": import.meta.env.VITE_SHOPIFY_ACCESS_TOKEN,
+  },
 });
 
 // Types
@@ -94,17 +94,22 @@ export interface ShopifyAnalytics {
 }
 
 // API Functions
-export const getShopInfo = async (_options?: ShopifyQueryOptions): Promise<ShopInfo> => {
-  if (process.env.NODE_ENV === 'development') {
+export const getShopInfo = async (
+  _options?: ShopifyQueryOptions,
+): Promise<ShopInfo> => {
+  if (process.env.NODE_ENV === "development") {
     return mockShopInfo;
   }
 
-  const response = await shopifyApi.get('/shop.json');
+  const response = await shopifyApi.get("/shop.json");
   return response.data.shop;
 };
 
-export const getProducts = async (first = 10, _options?: ShopifyQueryOptions): Promise<ShopifyProduct[]> => {
-  if (process.env.NODE_ENV === 'development') {
+export const getProducts = async (
+  first = 10,
+  _options?: ShopifyQueryOptions,
+): Promise<ShopifyProduct[]> => {
+  if (process.env.NODE_ENV === "development") {
     return mockProducts;
   }
 
@@ -112,8 +117,11 @@ export const getProducts = async (first = 10, _options?: ShopifyQueryOptions): P
   return response.data.products;
 };
 
-export const getOrders = async (first = 10, _options?: ShopifyQueryOptions): Promise<ShopifyOrder[]> => {
-  if (process.env.NODE_ENV === 'development') {
+export const getOrders = async (
+  first = 10,
+  _options?: ShopifyQueryOptions,
+): Promise<ShopifyOrder[]> => {
+  if (process.env.NODE_ENV === "development") {
     return mockOrders;
   }
 
@@ -121,98 +129,103 @@ export const getOrders = async (first = 10, _options?: ShopifyQueryOptions): Pro
   return response.data.orders;
 };
 
-export const getAnalytics = async (interval = 'MONTH', _options?: ShopifyQueryOptions): Promise<ShopifyAnalytics[]> => {
-  if (process.env.NODE_ENV === 'development') {
+export const getAnalytics = async (
+  interval = "MONTH",
+  _options?: ShopifyQueryOptions,
+): Promise<ShopifyAnalytics[]> => {
+  if (process.env.NODE_ENV === "development") {
     return mockAnalytics;
   }
 
-  const response = await shopifyApi.get(`/reports/sales.json?interval=${interval}`);
+  const response = await shopifyApi.get(
+    `/reports/sales.json?interval=${interval}`,
+  );
   return response.data.reports;
 };
 
 // Mock data
 export const mockShopInfo: ShopInfo = {
-  id: 'gid://shopify/Shop/12345',
-  name: 'Test Store',
-  email: 'store@example.com',
-  myshopifyDomain: 'test-store.myshopify.com',
+  id: "gid://shopify/Shop/12345",
+  name: "Test Store",
+  email: "store@example.com",
+  myshopifyDomain: "test-store.myshopify.com",
   primaryDomain: {
-    url: 'https://test-store.myshopify.com'
+    url: "https://test-store.myshopify.com",
   },
   plan: {
-    displayName: 'Enterprise',
+    displayName: "Enterprise",
     partnerDevelopment: false,
-    shopifyPlus: true
-  }
+    shopifyPlus: true,
+  },
 };
 
 export const mockAnalytics: ShopifyAnalytics[] = [
   {
-    interval: '2025-03',
-    totalGrossSales: { amount: '15000.00' },
-    totalNetSales: { amount: '14250.00' },
-    totalRefunds: { amount: '750.00' },
-    totalReturns: { amount: '500.00' },
-    totalOrders: 150
+    interval: "2025-03",
+    totalGrossSales: { amount: "15000.00" },
+    totalNetSales: { amount: "14250.00" },
+    totalRefunds: { amount: "750.00" },
+    totalReturns: { amount: "500.00" },
+    totalOrders: 150,
   },
   {
-    interval: '2025-02',
-    totalGrossSales: { amount: '12000.00' },
-    totalNetSales: { amount: '11400.00' },
-    totalRefunds: { amount: '600.00' },
-    totalReturns: { amount: '400.00' },
-    totalOrders: 120
-  }
+    interval: "2025-02",
+    totalGrossSales: { amount: "12000.00" },
+    totalNetSales: { amount: "11400.00" },
+    totalRefunds: { amount: "600.00" },
+    totalReturns: { amount: "400.00" },
+    totalOrders: 120,
+  },
 ];
 
 export const mockProducts: ShopifyProduct[] = [
   {
-    id: 'gid://shopify/Product/1',
-    title: 'Sample Product 1',
-    handle: 'sample-product-1',
-    description: 'A great product',
-    productType: 'Clothing',
-    status: 'ACTIVE',
-    vendor: 'Sample Vendor',
+    id: "gid://shopify/Product/1",
+    title: "Sample Product 1",
+    handle: "sample-product-1",
+    description: "A great product",
+    productType: "Clothing",
+    status: "ACTIVE",
+    vendor: "Sample Vendor",
     totalInventory: 100,
     priceRangeV2: {
       minVariantPrice: {
-        amount: '29.99',
-        currencyCode: 'USD'
+        amount: "29.99",
+        currencyCode: "USD",
       },
       maxVariantPrice: {
-        amount: '39.99',
-        currencyCode: 'USD'
-      }
+        amount: "39.99",
+        currencyCode: "USD",
+      },
     },
     images: {
       edges: [
         {
           node: {
-            url: 'https://cdn.shopify.com/sample/product1.jpg',
-            altText: 'Sample Product 1'
-          }
-        }
-      ]
-    }
-  }
+            url: "https://cdn.shopify.com/sample/product1.jpg",
+            altText: "Sample Product 1",
+          },
+        },
+      ],
+    },
+  },
 ];
 
 export const mockOrders: ShopifyOrder[] = [
   {
-    id: 'gid://shopify/Order/1',
-    name: '#1001',
-    email: 'customer@example.com',
-    createdAt: '2025-03-28T10:00:00Z',
+    id: "gid://shopify/Order/1",
+    name: "#1001",
+    email: "customer@example.com",
+    createdAt: "2025-03-28T10:00:00Z",
     totalPriceSet: {
       shopMoney: {
-        amount: '99.99',
-        currencyCode: 'USD'
-      }
+        amount: "99.99",
+        currencyCode: "USD",
+      },
     },
-    displayFulfillmentStatus: 'UNFULFILLED',
-    displayFinancialStatus: 'PAID'
-  }
+    displayFulfillmentStatus: "UNFULFILLED",
+    displayFinancialStatus: "PAID",
+  },
 ];
 
 export default shopifyApi;

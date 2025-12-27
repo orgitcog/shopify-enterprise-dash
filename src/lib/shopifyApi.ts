@@ -1,13 +1,13 @@
-import axios from 'axios';
-import { supabase } from './supabase';
+import axios from "axios";
+import { supabase } from "./supabase";
 
 // Initialize GraphQL client
 const shopifyClient = axios.create({
   baseURL: `https://${import.meta.env.VITE_SHOPIFY_STORE_URL}/admin/api/2024-01/graphql.json`,
   headers: {
-    'Content-Type': 'application/json',
-    'X-Shopify-Access-Token': import.meta.env.VITE_SHOPIFY_ACCESS_TOKEN
-  }
+    "Content-Type": "application/json",
+    "X-Shopify-Access-Token": import.meta.env.VITE_SHOPIFY_ACCESS_TOKEN,
+  },
 });
 
 // Types for Shopify responses
@@ -53,7 +53,10 @@ export interface ShopifyAnalytics {
 }
 
 // Connect to a Shopify store and authenticate
-export const connectToShopify = async (shopDomain: string, accessToken: string) => {
+export const connectToShopify = async (
+  shopDomain: string,
+  accessToken: string,
+) => {
   try {
     // Validate the connection by making a simple query
     const { data, errors } = await shopifyClient.request({
@@ -64,17 +67,17 @@ export const connectToShopify = async (shopDomain: string, accessToken: string) 
             name
           }
         }
-      `
+      `,
     });
 
     if (errors) {
-      console.error('Error connecting to Shopify:', errors);
+      console.error("Error connecting to Shopify:", errors);
       return { success: false, error: errors[0].message };
     }
 
     // Store the connection in Supabase
     const { error: storeError } = await supabase
-      .from('shopify_connections')
+      .from("shopify_connections")
       .insert([
         {
           shop_domain: shopDomain,
@@ -82,23 +85,23 @@ export const connectToShopify = async (shopDomain: string, accessToken: string) 
           user_id: (await supabase.auth.getUser()).data.user?.id,
           store_name: data.shop.name,
           store_id: data.shop.id,
-          status: 'active',
+          status: "active",
           created_at: new Date().toISOString(),
-          last_sync: new Date().toISOString()
-        }
+          last_sync: new Date().toISOString(),
+        },
       ]);
 
     if (storeError) {
-      console.error('Error storing Shopify connection:', storeError);
+      console.error("Error storing Shopify connection:", storeError);
       return { success: false, error: storeError.message };
     }
 
     return { success: true, data: data.shop };
   } catch (error) {
-    console.error('Error in connectToShopify:', error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error'
+    console.error("Error in connectToShopify:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 };
@@ -124,11 +127,11 @@ export const getShopifyStoreInfo = async (): Promise<ShopifyStore | null> => {
             }
           }
         }
-      `
+      `,
     });
 
     if (errors) {
-      console.error('Error fetching shop info:', errors);
+      console.error("Error fetching shop info:", errors);
       return null;
     }
 
@@ -140,11 +143,11 @@ export const getShopifyStoreInfo = async (): Promise<ShopifyStore | null> => {
       domain: data.shop.primaryDomain.url,
       plan: {
         displayName: data.shop.plan.displayName,
-        shopifyPlus: data.shop.plan.shopifyPlus
-      }
+        shopifyPlus: data.shop.plan.shopifyPlus,
+      },
     };
   } catch (error) {
-    console.error('Error in getShopifyStoreInfo:', error);
+    console.error("Error in getShopifyStoreInfo:", error);
     return null;
   }
 };
@@ -175,11 +178,11 @@ export const getShopifyOrders = async (limit = 10): Promise<ShopifyOrder[]> => {
           }
         }
       `,
-      variables: { first: limit }
+      variables: { first: limit },
     });
 
     if (errors) {
-      console.error('Error fetching orders:', errors);
+      console.error("Error fetching orders:", errors);
       return [];
     }
 
@@ -190,16 +193,18 @@ export const getShopifyOrders = async (limit = 10): Promise<ShopifyOrder[]> => {
       createdAt: edge.node.createdAt,
       totalPrice: edge.node.totalPriceSet.shopMoney.amount,
       fulfillmentStatus: edge.node.displayFulfillmentStatus,
-      financialStatus: edge.node.displayFinancialStatus
+      financialStatus: edge.node.displayFinancialStatus,
     }));
   } catch (error) {
-    console.error('Error in getShopifyOrders:', error);
+    console.error("Error in getShopifyOrders:", error);
     return [];
   }
 };
 
 // Get products
-export const getShopifyProducts = async (limit = 10): Promise<ShopifyProduct[]> => {
+export const getShopifyProducts = async (
+  limit = 10,
+): Promise<ShopifyProduct[]> => {
   try {
     const { data, errors } = await shopifyClient.request({
       query: `
@@ -231,18 +236,18 @@ export const getShopifyProducts = async (limit = 10): Promise<ShopifyProduct[]> 
           }
         }
       `,
-      variables: { first: limit }
+      variables: { first: limit },
     });
 
     if (errors) {
-      console.error('Error fetching products:', errors);
+      console.error("Error fetching products:", errors);
       return [];
     }
 
     return data.products.edges.map((edge: any) => {
       const images = edge.node.images.edges;
-      const imageUrl = images.length > 0 ? images[0].node.url : '';
-      
+      const imageUrl = images.length > 0 ? images[0].node.url : "";
+
       return {
         id: edge.node.id,
         title: edge.node.title,
@@ -250,17 +255,19 @@ export const getShopifyProducts = async (limit = 10): Promise<ShopifyProduct[]> 
         status: edge.node.status,
         totalInventory: edge.node.totalInventory,
         price: edge.node.priceRangeV2.minVariantPrice.amount,
-        image: imageUrl
+        image: imageUrl,
       };
     });
   } catch (error) {
-    console.error('Error in getShopifyProducts:', error);
+    console.error("Error in getShopifyProducts:", error);
     return [];
   }
 };
 
 // Get analytics data
-export const getShopifyAnalytics = async (interval = 'MONTH'): Promise<ShopifyAnalytics[]> => {
+export const getShopifyAnalytics = async (
+  interval = "MONTH",
+): Promise<ShopifyAnalytics[]> => {
   try {
     const { data, errors } = await shopifyClient.request({
       query: `
@@ -289,82 +296,88 @@ export const getShopifyAnalytics = async (interval = 'MONTH'): Promise<ShopifyAn
           }
         }
       `,
-      variables: { interval }
+      variables: { interval },
     });
 
     if (errors) {
-      console.error('Error fetching analytics:', errors);
+      console.error("Error fetching analytics:", errors);
       return [];
     }
 
     return data.shopifyAnalytics.sales.edges.map((edge: any) => edge.node);
   } catch (error) {
-    console.error('Error in getShopifyAnalytics:', error);
+    console.error("Error in getShopifyAnalytics:", error);
     return [];
   }
 };
 
 // Sync Shopify data to Supabase
-export const syncShopifyData = async (): Promise<{ success: boolean; message: string; }> => {
+export const syncShopifyData = async (): Promise<{
+  success: boolean;
+  message: string;
+}> => {
   try {
     // 1. Get store info
     const storeInfo = await getShopifyStoreInfo();
     if (!storeInfo) {
-      return { success: false, message: 'Failed to get store information' };
+      return { success: false, message: "Failed to get store information" };
     }
 
     // 2. Get orders
     const orders = await getShopifyOrders(100);
-    
+
     // 3. Get products
     const products = await getShopifyProducts(100);
-    
+
     // 4. Calculate metrics
-    const totalRevenue = orders.reduce((sum, order) => sum + parseFloat(order.totalPrice), 0);
+    const totalRevenue = orders.reduce(
+      (sum, order) => sum + parseFloat(order.totalPrice),
+      0,
+    );
     const totalOrders = orders.length;
-    
+
     // 5. Update store info in Supabase
-    const { error: updateError } = await supabase
-      .from('stores')
-      .upsert({
+    const { error: updateError } = await supabase.from("stores").upsert(
+      {
         name: storeInfo.name,
         url: storeInfo.myshopifyDomain,
         revenue: totalRevenue,
         orders: totalOrders,
-        status: 'active',
-        last_sync: new Date().toISOString()
-      }, {
-        onConflict: 'url'
-      });
+        status: "active",
+        last_sync: new Date().toISOString(),
+      },
+      {
+        onConflict: "url",
+      },
+    );
 
     if (updateError) {
-      console.error('Error updating store data:', updateError);
-      return { success: false, message: 'Failed to update store data' };
+      console.error("Error updating store data:", updateError);
+      return { success: false, message: "Failed to update store data" };
     }
 
     // 6. Store order summary
-    const { error: ordersError } = await supabase
-      .from('order_summary')
-      .insert({
-        total_orders: totalOrders,
-        total_revenue: totalRevenue,
-        sync_date: new Date().toISOString(),
-        shop_domain: storeInfo.myshopifyDomain
-      });
+    const { error: ordersError } = await supabase.from("order_summary").insert({
+      total_orders: totalOrders,
+      total_revenue: totalRevenue,
+      sync_date: new Date().toISOString(),
+      shop_domain: storeInfo.myshopifyDomain,
+    });
 
     if (ordersError) {
-      console.error('Error storing order summary:', ordersError);
+      console.error("Error storing order summary:", ordersError);
     }
 
-    return { 
-      success: true, 
-      message: `Successfully synced ${orders.length} orders and ${products.length} products` 
+    return {
+      success: true,
+      message: `Successfully synced ${orders.length} orders and ${products.length} products`,
     };
   } catch (error) {
-    console.error('Error in syncShopifyData:', error);
-    return { 
-      success: false, 
-      message: error instanceof Error ? error.message : 'Unknown error during sync'
+    console.error("Error in syncShopifyData:", error);
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Unknown error during sync",
     };
   }
 };

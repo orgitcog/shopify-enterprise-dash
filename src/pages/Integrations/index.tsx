@@ -1,156 +1,156 @@
-import React from 'react';
-import { 
-  Page, 
-  Layout, 
-  Card, 
-  Text, 
-  Badge, 
-  Button, 
+import React from "react";
+import {
+  Page,
+  Layout,
+  Card,
+  Text,
+  Badge,
+  Button,
   ButtonGroup,
   List,
-  Link
-} from '@shopify/polaris';
-import { 
-  ShoppingBag, 
-  Database, 
-  MessageSquare, 
-  Building2, 
-  Store, 
+  Link,
+} from "@shopify/polaris";
+import {
+  ShoppingBag,
+  Database,
+  MessageSquare,
+  Building2,
+  Store,
   Brain,
   Briefcase,
   BookOpen,
-  RefreshCw
-} from 'lucide-react';
+  RefreshCw,
+} from "lucide-react";
 
 export function Integrations() {
   const integrations = [
     {
-      id: 'shopify',
-      name: 'Shopify',
-      description: 'E-commerce platform integration via Admin API',
+      id: "shopify",
+      name: "Shopify",
+      description: "E-commerce platform integration via Admin API",
       icon: ShoppingBag,
-      status: 'active',
+      status: "active",
       features: [
-        'Store management',
-        'Product catalog',
-        'Order processing',
-        'Customer data',
-        'Analytics'
+        "Store management",
+        "Product catalog",
+        "Order processing",
+        "Customer data",
+        "Analytics",
       ],
-      docs: 'https://shopify.dev/docs/api/admin-rest'
+      docs: "https://shopify.dev/docs/api/admin-rest",
     },
     {
-      id: 'supabase',
-      name: 'Supabase',
-      description: 'Database and authentication provider',
+      id: "supabase",
+      name: "Supabase",
+      description: "Database and authentication provider",
       icon: Database,
-      status: 'active',
+      status: "active",
       features: [
-        'PostgreSQL database',
-        'Authentication',
-        'Row-level security',
-        'Real-time subscriptions'
+        "PostgreSQL database",
+        "Authentication",
+        "Row-level security",
+        "Real-time subscriptions",
       ],
-      docs: 'https://supabase.com/docs'
+      docs: "https://supabase.com/docs",
     },
     {
-      id: 'openai',
-      name: 'OpenAI',
-      description: 'AI-powered chat and content generation',
+      id: "openai",
+      name: "OpenAI",
+      description: "AI-powered chat and content generation",
       icon: Brain,
-      status: 'active',
+      status: "active",
       features: [
-        'Chat completions',
-        'Content moderation',
-        'Fine-tuning',
-        'Usage monitoring'
+        "Chat completions",
+        "Content moderation",
+        "Fine-tuning",
+        "Usage monitoring",
       ],
-      docs: 'https://platform.openai.com/docs'
+      docs: "https://platform.openai.com/docs",
     },
     {
-      id: 'appdirect',
-      name: 'AppDirect',
-      description: 'Enterprise application marketplace',
+      id: "appdirect",
+      name: "AppDirect",
+      description: "Enterprise application marketplace",
       icon: Store,
-      status: 'active',
+      status: "active",
       features: [
-        'App marketplace',
-        'Subscription management',
-        'User management',
-        'Event handling'
+        "App marketplace",
+        "Subscription management",
+        "User management",
+        "Event handling",
       ],
-      docs: 'https://help.appdirect.com/api'
+      docs: "https://help.appdirect.com/api",
     },
     {
-      id: 'netsuite',
-      name: 'NetSuite',
-      description: 'Enterprise resource planning integration',
+      id: "netsuite",
+      name: "NetSuite",
+      description: "Enterprise resource planning integration",
       icon: Building2,
-      status: 'active',
+      status: "active",
       features: [
-        'Customer management',
-        'Transaction tracking',
-        'Financial data',
-        'Subsidiary management'
+        "Customer management",
+        "Transaction tracking",
+        "Financial data",
+        "Subsidiary management",
       ],
-      docs: 'https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_N3427749.html'
+      docs: "https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/chapter_N3427749.html",
     },
     {
-      id: 'quickbooks',
-      name: 'QuickBooks',
-      description: 'Accounting and financial management',
+      id: "quickbooks",
+      name: "QuickBooks",
+      description: "Accounting and financial management",
       icon: Briefcase,
-      status: 'active',
+      status: "active",
       features: [
-        'Customer data',
-        'Invoice management',
-        'Payment tracking',
-        'Financial reports'
+        "Customer data",
+        "Invoice management",
+        "Payment tracking",
+        "Financial reports",
       ],
-      docs: 'https://developer.intuit.com/app/developer/qbo/docs/develop'
+      docs: "https://developer.intuit.com/app/developer/qbo/docs/develop",
     },
     {
-      id: 'repsly',
-      name: 'Repsly',
-      description: 'Field team and retail execution management',
+      id: "repsly",
+      name: "Repsly",
+      description: "Field team and retail execution management",
       icon: Store,
-      status: 'active',
+      status: "active",
       features: [
-        'Field team management',
-        'Store visits',
-        'Inventory tracking',
-        'Performance analytics'
+        "Field team management",
+        "Store visits",
+        "Inventory tracking",
+        "Performance analytics",
       ],
-      docs: 'https://api.repsly.com/v3/docs'
+      docs: "https://api.repsly.com/v3/docs",
     },
     {
-      id: 'sillytavern',
-      name: 'SillyTavern',
-      description: 'AI character and chat management',
+      id: "sillytavern",
+      name: "SillyTavern",
+      description: "AI character and chat management",
       icon: MessageSquare,
-      status: 'active',
+      status: "active",
       features: [
-        'Character management',
-        'Chat interactions',
-        'Voice settings',
-        'Analytics'
+        "Character management",
+        "Chat interactions",
+        "Voice settings",
+        "Analytics",
       ],
-      docs: 'https://docs.sillytavern.app'
+      docs: "https://docs.sillytavern.app",
     },
     {
-      id: 'wlns',
-      name: 'Wellness Center',
-      description: 'Wellness and spa management system',
+      id: "wlns",
+      name: "Wellness Center",
+      description: "Wellness and spa management system",
       icon: BookOpen,
-      status: 'active',
+      status: "active",
       features: [
-        'Center management',
-        'Practitioner scheduling',
-        'Service booking',
-        'Client management'
+        "Center management",
+        "Practitioner scheduling",
+        "Service booking",
+        "Client management",
       ],
-      docs: '#'
-    }
+      docs: "#",
+    },
   ];
 
   return (
@@ -158,12 +158,12 @@ export function Integrations() {
       title="Integrations"
       subtitle="Manage and monitor your external service connections"
       primaryAction={{
-        content: 'Sync All',
+        content: "Sync All",
         icon: RefreshCw,
         onAction: () => {
           // TODO: Implement sync all functionality
-          alert('Syncing all integrations...');
-        }
+          alert("Syncing all integrations...");
+        },
       }}
     >
       <Layout>
@@ -175,17 +175,15 @@ export function Integrations() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center">
                       <div className="p-2 rounded-lg bg-gray-100 mr-3">
-                        {React.createElement(integration.icon, { 
-                          className: 'w-6 h-6 text-gray-700' 
+                        {React.createElement(integration.icon, {
+                          className: "w-6 h-6 text-gray-700",
                         })}
                       </div>
                       <div>
                         <Text variant="headingMd" as="h3">
                           {integration.name}
                         </Text>
-                        <Badge status="success">
-                          {integration.status}
-                        </Badge>
+                        <Badge status="success">{integration.status}</Badge>
                       </div>
                     </div>
                   </div>
@@ -211,9 +209,7 @@ export function Integrations() {
                     </Link>
                     <ButtonGroup>
                       <Button>Configure</Button>
-                      <Button primary>
-                        Test Connection
-                      </Button>
+                      <Button primary>Test Connection</Button>
                     </ButtonGroup>
                   </div>
                 </Card.Section>
@@ -228,7 +224,9 @@ export function Integrations() {
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div>
                   <Text variant="headingSm">API Rate Limits</Text>
-                  <p className="text-gray-600">Monitoring API usage across all integrations</p>
+                  <p className="text-gray-600">
+                    Monitoring API usage across all integrations
+                  </p>
                 </div>
                 <div className="text-right">
                   <Text variant="headingLg">85%</Text>
@@ -241,7 +239,9 @@ export function Integrations() {
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div>
                   <Text variant="headingSm">Data Sync Status</Text>
-                  <p className="text-gray-600">Last sync completed successfully</p>
+                  <p className="text-gray-600">
+                    Last sync completed successfully
+                  </p>
                 </div>
                 <div className="text-right">
                   <Text variant="bodySm" color="success">

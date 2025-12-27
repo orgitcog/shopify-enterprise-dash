@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
-import { 
-  Page, 
-  Card, 
-  Layout, 
-  Button, 
+import React, { useState } from "react";
+import {
+  Page,
+  Card,
+  Layout,
+  Button,
   ButtonGroup,
   Text,
   TextField,
   Select,
-  Banner
-} from '@shopify/polaris';
-import { _Braces, Play, Download, Copy, RefreshCw } from 'lucide-react';
+  Banner,
+} from "@shopify/polaris";
+import { _Braces, Play, Download, Copy, RefreshCw } from "lucide-react";
 
 export function MermaidAI() {
-  const [diagram, setDiagram] = useState('');
-  const [diagramType, setDiagramType] = useState('flowchart');
-  const [generatedCode, setGeneratedCode] = useState('');
+  const [diagram, setDiagram] = useState("");
+  const [diagramType, setDiagramType] = useState("flowchart");
+  const [generatedCode, setGeneratedCode] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleGenerate = () => {
     setIsGenerating(true);
     setError(null);
-    
+
     // Simulate AI generation
     setTimeout(() => {
       const mockDiagram = `graph TD
@@ -31,7 +31,7 @@ export function MermaidAI() {
     B -- No --> D[Debug]
     D --> B
     C --> E[Deploy]`;
-      
+
       setGeneratedCode(mockDiagram);
       setIsGenerating(false);
     }, 1500);
@@ -42,11 +42,11 @@ export function MermaidAI() {
   };
 
   const handleDownload = () => {
-    const blob = new Blob([generatedCode], { type: 'text/plain' });
+    const blob = new Blob([generatedCode], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'diagram.mmd';
+    a.download = "diagram.mmd";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -58,10 +58,10 @@ export function MermaidAI() {
       title="Mermaid AI"
       subtitle="Generate and visualize diagrams using AI"
       primaryAction={{
-        content: 'Generate Diagram',
+        content: "Generate Diagram",
         icon: Play,
         onAction: handleGenerate,
-        loading: isGenerating
+        loading: isGenerating,
       }}
     >
       <Layout>
@@ -72,12 +72,12 @@ export function MermaidAI() {
                 <Select
                   label="Diagram Type"
                   options={[
-                    { label: 'Flowchart', value: 'flowchart' },
-                    { label: 'Sequence Diagram', value: 'sequence' },
-                    { label: 'Class Diagram', value: 'class' },
-                    { label: 'Entity Relationship', value: 'er' },
-                    { label: 'State Diagram', value: 'state' },
-                    { label: 'Gantt Chart', value: 'gantt' }
+                    { label: "Flowchart", value: "flowchart" },
+                    { label: "Sequence Diagram", value: "sequence" },
+                    { label: "Class Diagram", value: "class" },
+                    { label: "Entity Relationship", value: "er" },
+                    { label: "State Diagram", value: "state" },
+                    { label: "Gantt Chart", value: "gantt" },
                   ]}
                   value={diagramType}
                   onChange={setDiagramType}
@@ -105,21 +105,17 @@ export function MermaidAI() {
             {generatedCode && (
               <Card.Section>
                 <div className="mb-4 flex justify-between items-center">
-                  <Text variant="headingMd" as="h3">Generated Diagram</Text>
+                  <Text variant="headingMd" as="h3">
+                    Generated Diagram
+                  </Text>
                   <ButtonGroup>
-                    <Button 
-                      icon={Copy}
-                      onClick={handleCopy}
-                    >
+                    <Button icon={Copy} onClick={handleCopy}>
                       Copy
                     </Button>
-                    <Button 
-                      icon={Download}
-                      onClick={handleDownload}
-                    >
+                    <Button icon={Download} onClick={handleDownload}>
                       Download
                     </Button>
-                    <Button 
+                    <Button
                       icon={RefreshCw}
                       onClick={handleGenerate}
                       loading={isGenerating}
@@ -128,7 +124,7 @@ export function MermaidAI() {
                     </Button>
                   </ButtonGroup>
                 </div>
-                
+
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <pre className="whitespace-pre-wrap font-mono text-sm">
                     {generatedCode}
@@ -136,7 +132,9 @@ export function MermaidAI() {
                 </div>
 
                 <div className="mt-4">
-                  <Text variant="headingMd" as="h3" className="mb-2">Preview</Text>
+                  <Text variant="headingMd" as="h3" className="mb-2">
+                    Preview
+                  </Text>
                   <div className="bg-white border rounded-lg p-4">
                     {/* In a real implementation, render the Mermaid diagram here */}
                     <div className="text-center text-gray-500">
@@ -154,15 +152,19 @@ export function MermaidAI() {
             <Card.Section title="Templates">
               <div className="space-y-2">
                 {[
-                  'User Authentication Flow',
-                  'API Architecture',
-                  'Database Schema',
-                  'CI/CD Pipeline',
-                  'Microservices Communication'
+                  "User Authentication Flow",
+                  "API Architecture",
+                  "Database Schema",
+                  "CI/CD Pipeline",
+                  "Microservices Communication",
                 ].map((template, index) => (
                   <Button
                     key={index}
-                    onClick={() => setDiagram(`Generate a diagram for ${template.toLowerCase()}`)}
+                    onClick={() =>
+                      setDiagram(
+                        `Generate a diagram for ${template.toLowerCase()}`,
+                      )
+                    }
                     fullWidth
                     textAlign="left"
                   >

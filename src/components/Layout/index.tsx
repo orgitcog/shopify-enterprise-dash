@@ -1,57 +1,57 @@
-import React from 'react';
-import { Frame, _Navigation } from '@shopify/polaris';
-import { useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Users, 
-  ShieldCheck, 
-  BarChart3, 
-  FileText, 
-  Settings 
-} from 'lucide-react';
-import { TopBar } from './TopBar';
-import { NavigationMenu } from './NavigationMenu';
+import React from "react";
+import { Frame, _Navigation } from "@shopify/polaris";
+import { useLocation } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Users,
+  ShieldCheck,
+  BarChart3,
+  FileText,
+  Settings,
+} from "lucide-react";
+import { TopBar } from "./TopBar";
+import { NavigationMenu } from "./NavigationMenu";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
 
   const navigationItems = [
     {
-      label: 'Overview',
+      label: "Overview",
       icon: LayoutDashboard,
-      url: '/',
-      selected: location.pathname === '/'
+      url: "/",
+      selected: location.pathname === "/",
     },
     {
-      label: 'Users',
+      label: "Users",
       icon: Users,
-      url: '/users',
-      selected: location.pathname.startsWith('/users')
+      url: "/users",
+      selected: location.pathname.startsWith("/users"),
     },
     {
-      label: 'Roles',
+      label: "Roles",
       icon: ShieldCheck,
-      url: '/roles',
-      selected: location.pathname.startsWith('/roles')
+      url: "/roles",
+      selected: location.pathname.startsWith("/roles"),
     },
     {
-      label: 'Analytics',
+      label: "Analytics",
       icon: BarChart3,
-      url: '/analytics',
-      selected: location.pathname.startsWith('/analytics')
+      url: "/analytics",
+      selected: location.pathname.startsWith("/analytics"),
     },
     {
-      label: 'Reports',
+      label: "Reports",
       icon: FileText,
-      url: '/reports',
-      selected: location.pathname.startsWith('/reports')
+      url: "/reports",
+      selected: location.pathname.startsWith("/reports"),
     },
     {
-      label: 'Settings',
+      label: "Settings",
       icon: Settings,
-      url: '/settings',
-      selected: location.pathname.startsWith('/settings')
-    }
+      url: "/settings",
+      selected: location.pathname.startsWith("/settings"),
+    },
   ];
 
   return (
@@ -59,9 +59,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       topBar={<TopBar />}
       navigation={<NavigationMenu items={navigationItems} />}
     >
-      <div className="p-6">
-        {children}
-      </div>
+      <div className="p-6">{children}</div>
     </Frame>
   );
 }

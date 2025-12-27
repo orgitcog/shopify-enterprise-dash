@@ -1,5 +1,5 @@
-import React from 'react';
-import { Page, EmptyState, Card, Button } from '@shopify/polaris';
+import React from "react";
+import { Page, EmptyState, Card, Button } from "@shopify/polaris";
 
 export function RetailLocations() {
   return (
@@ -14,8 +14,9 @@ export function RetailLocations() {
             image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
           >
             <p>
-              This feature is currently under development. It will allow you to manage all your retail store locations,
-              store details, contacts, and performance metrics in one place.
+              This feature is currently under development. It will allow you to
+              manage all your retail store locations, store details, contacts,
+              and performance metrics in one place.
             </p>
             <div className="mt-4">
               <Button primary>Request Early Access</Button>

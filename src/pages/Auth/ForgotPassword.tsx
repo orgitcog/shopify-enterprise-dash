@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
-import { Card, FormLayout, TextField, Button, Banner, Text, Link } from '@shopify/polaris';
-import { useAuth } from '../../context/AuthContext';
-import { Mail } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Card,
+  FormLayout,
+  TextField,
+  Button,
+  Banner,
+  Text,
+  Link,
+} from "@shopify/polaris";
+import { useAuth } from "../../context/AuthContext";
+import { Mail } from "lucide-react";
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const { resetPassword, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
+    setErrorMessage("");
+    setSuccessMessage("");
 
     if (!email) {
-      setErrorMessage('Please enter your email address');
+      setErrorMessage("Please enter your email address");
       return;
     }
 
@@ -24,11 +32,13 @@ export default function ForgotPassword() {
       if (error) {
         setErrorMessage(error.message);
       } else {
-        setSuccessMessage('Password reset instructions have been sent to your email');
+        setSuccessMessage(
+          "Password reset instructions have been sent to your email",
+        );
       }
     } catch (error) {
-      setErrorMessage('An unexpected error occurred. Please try again later.');
-      console.error('Password reset error:', error);
+      setErrorMessage("An unexpected error occurred. Please try again later.");
+      console.error("Password reset error:", error);
     }
   };
 
@@ -37,19 +47,21 @@ export default function ForgotPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">Forgot Password</h1>
-          <p className="text-gray-600 mt-2">We'll send you instructions to reset your password</p>
+          <p className="text-gray-600 mt-2">
+            We'll send you instructions to reset your password
+          </p>
         </div>
 
         <Card>
           <Card.Section>
             {errorMessage && (
-              <Banner status="critical" onDismiss={() => setErrorMessage('')}>
+              <Banner status="critical" onDismiss={() => setErrorMessage("")}>
                 <p>{errorMessage}</p>
               </Banner>
             )}
 
             {successMessage && (
-              <Banner status="success" onDismiss={() => setSuccessMessage('')}>
+              <Banner status="success" onDismiss={() => setSuccessMessage("")}>
                 <p>{successMessage}</p>
               </Banner>
             )}
@@ -73,8 +85,7 @@ export default function ForgotPassword() {
 
                 <div className="text-center mt-4">
                   <Text variant="bodyMd" as="p">
-                    Remember your password?{' '}
-                    <Link url="/login">Log in</Link>
+                    Remember your password? <Link url="/login">Log in</Link>
                   </Text>
                 </div>
               </FormLayout>

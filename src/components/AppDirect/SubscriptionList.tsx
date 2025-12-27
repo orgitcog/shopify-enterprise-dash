@@ -1,47 +1,53 @@
-import React, { useState } from 'react';
-import { 
-  Card, 
-  ResourceList, 
-  ResourceItem, 
-  Text, 
-  Badge, 
-  Button, 
+import React, { useState } from "react";
+import {
+  Card,
+  ResourceList,
+  ResourceItem,
+  Text,
+  Badge,
+  Button,
   Filters,
   Modal,
   TextContainer,
   ButtonGroup,
   TextField,
   EmptySearchResult,
-  Spinner
-} from '@shopify/polaris';
-import { useSubscriptions, useCancelSubscription } from '../../hooks/useAppDirectData';
-import { format, parseISO } from 'date-fns';
-import { Calendar, AlertCircle } from 'lucide-react';
+  Spinner,
+} from "@shopify/polaris";
+import {
+  useSubscriptions,
+  useCancelSubscription,
+} from "../../hooks/useAppDirectData";
+import { format, parseISO } from "date-fns";
+import { Calendar, AlertCircle } from "lucide-react";
 
 export function SubscriptionList() {
   const { data: subscriptions, isLoading, error } = useSubscriptions();
   const cancelSubscription = useCancelSubscription();
-  
-  const [searchValue, setSearchValue] = useState('');
+
+  const [searchValue, setSearchValue] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [cancelModalActive, setCancelModalActive] = useState(false);
-  const [selectedSubscriptionId, setSelectedSubscriptionId] = useState('');
-  const [cancelReason, setCancelReason] = useState('');
+  const [selectedSubscriptionId, setSelectedSubscriptionId] = useState("");
+  const [cancelReason, setCancelReason] = useState("");
 
   // Format date for display
   const formatDate = (dateString: string) => {
-    return format(parseISO(dateString), 'MMM d, yyyy');
+    return format(parseISO(dateString), "MMM d, yyyy");
   };
 
   // Filter subscriptions based on search and status
-  const filteredSubs = subscriptions ? subscriptions.filter(sub => {
-    const matchesSearch = 
-      sub.items.some(item => item.product.name.toLowerCase().includes(searchValue.toLowerCase()));
-    
-    const matchesStatus = !selectedStatus || sub.status === selectedStatus;
-    
-    return matchesSearch && matchesStatus;
-  }) : [];
+  const filteredSubs = subscriptions
+    ? subscriptions.filter((sub) => {
+        const matchesSearch = sub.items.some((item) =>
+          item.product.name.toLowerCase().includes(searchValue.toLowerCase()),
+        );
+
+        const matchesStatus = !selectedStatus || sub.status === selectedStatus;
+
+        return matchesSearch && matchesStatus;
+      })
+    : [];
 
   const handleSearchChange = (value: string) => {
     setSearchValue(value);
@@ -53,7 +59,7 @@ export function SubscriptionList() {
 
   const handleCancelClick = (subscriptionId: string) => {
     setSelectedSubscriptionId(subscriptionId);
-    setCancelReason('');
+    setCancelReason("");
     setCancelModalActive(true);
   };
 
@@ -63,13 +69,13 @@ export function SubscriptionList() {
     try {
       await cancelSubscription.mutateAsync({
         subscriptionId: selectedSubscriptionId,
-        reason: cancelReason
+        reason: cancelReason,
       });
 
       setCancelModalActive(false);
       // Show success message or notification here
     } catch (error) {
-      console.error('Error cancelling subscription:', error);
+      console.error("Error cancelling subscription:", error);
       // Show error message
     }
   };
@@ -92,7 +98,9 @@ export function SubscriptionList() {
       <Card sectioned title="Active Subscriptions">
         <div className="bg-red-50 text-red-800 p-4 rounded">
           <p className="font-medium">Error loading subscriptions</p>
-          <p className="text-sm mt-1">{error instanceof Error ? error.message : 'Unknown error'}</p>
+          <p className="text-sm mt-1">
+            {error instanceof Error ? error.message : "Unknown error"}
+          </p>
         </div>
       </Card>
     );
@@ -102,7 +110,9 @@ export function SubscriptionList() {
     <Card>
       <Card.Section>
         <div className="flex justify-between items-center mb-4">
-          <Text variant="headingMd" as="h2">Application Subscriptions</Text>
+          <Text variant="headingMd" as="h2">
+            Application Subscriptions
+          </Text>
           <Button url="/apps/marketplace">Browse Apps</Button>
         </div>
       </Card.Section>
@@ -113,56 +123,56 @@ export function SubscriptionList() {
           queryPlaceholder="Search subscriptions..."
           filters={[
             {
-              key: 'status',
-              label: 'Status',
+              key: "status",
+              label: "Status",
               filter: (
                 <div className="flex gap-2">
-                  <Button 
-                    onClick={() => handleStatusChange(null)} 
+                  <Button
+                    onClick={() => handleStatusChange(null)}
                     pressed={selectedStatus === null}
                   >
                     All
                   </Button>
-                  <Button 
-                    onClick={() => handleStatusChange('ACTIVE')} 
-                    pressed={selectedStatus === 'ACTIVE'}
+                  <Button
+                    onClick={() => handleStatusChange("ACTIVE")}
+                    pressed={selectedStatus === "ACTIVE"}
                   >
                     Active
                   </Button>
-                  <Button 
-                    onClick={() => handleStatusChange('CANCELLED')} 
-                    pressed={selectedStatus === 'CANCELLED'}
+                  <Button
+                    onClick={() => handleStatusChange("CANCELLED")}
+                    pressed={selectedStatus === "CANCELLED"}
                   >
                     Cancelled
                   </Button>
                 </div>
               ),
               shortcut: true,
-            }
+            },
           ]}
           onQueryChange={handleSearchChange}
-          onQueryClear={() => setSearchValue('')}
+          onQueryClear={() => setSearchValue("")}
         />
       </Card.Section>
 
       <Card.Section>
         {filteredSubs && filteredSubs.length > 0 ? (
           <ResourceList
-            resourceName={{ singular: 'subscription', plural: 'subscriptions' }}
+            resourceName={{ singular: "subscription", plural: "subscriptions" }}
             items={filteredSubs}
             renderItem={(sub) => {
               const { id, items, order, status, startDate, endDate } = sub;
-              const appName = items[0]?.product.name || 'Unknown App';
-              
+              const appName = items[0]?.product.name || "Unknown App";
+
               let statusBadge;
               switch (status) {
-                case 'ACTIVE':
+                case "ACTIVE":
                   statusBadge = <Badge status="success">Active</Badge>;
                   break;
-                case 'CANCELLED':
+                case "CANCELLED":
                   statusBadge = <Badge status="critical">Cancelled</Badge>;
                   break;
-                case 'SUSPENDED':
+                case "SUSPENDED":
                   statusBadge = <Badge status="warning">Suspended</Badge>;
                   break;
                 default:
@@ -177,31 +187,37 @@ export function SubscriptionList() {
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="flex items-center">
-                        <h3 className="text-base font-medium mr-2">{appName}</h3>
+                        <h3 className="text-base font-medium mr-2">
+                          {appName}
+                        </h3>
                         {statusBadge}
                       </div>
                       <div className="text-sm text-gray-500 mt-1">
                         <div className="flex items-center mt-1">
                           <Badge>{order.editionCode}</Badge>
-                          <Badge status="info" className="ml-2">{order.pricingDuration}</Badge>
+                          <Badge status="info" className="ml-2">
+                            {order.pricingDuration}
+                          </Badge>
                         </div>
                         <div className="flex items-center mt-2">
                           <Calendar className="w-4 h-4 mr-2" />
                           <span>Started: {formatDate(startDate)}</span>
                           {endDate && (
-                            <span className="ml-3">Ended: {formatDate(endDate)}</span>
+                            <span className="ml-3">
+                              Ended: {formatDate(endDate)}
+                            </span>
                           )}
                         </div>
                       </div>
                     </div>
                     <div>
-                      {status === 'ACTIVE' && (
+                      {status === "ACTIVE" && (
                         <ButtonGroup>
                           <Button url={`/apps/subscriptions/${id}`} size="slim">
                             Details
                           </Button>
-                          <Button 
-                            destructive 
+                          <Button
+                            destructive
                             size="slim"
                             onClick={() => handleCancelClick(id)}
                           >
@@ -209,7 +225,7 @@ export function SubscriptionList() {
                           </Button>
                         </ButtonGroup>
                       )}
-                      {status === 'CANCELLED' && (
+                      {status === "CANCELLED" && (
                         <div className="text-sm text-gray-500">
                           {sub.notice && (
                             <div className="flex items-center text-red-500">
@@ -239,21 +255,24 @@ export function SubscriptionList() {
         onClose={() => setCancelModalActive(false)}
         title="Cancel Subscription"
         primaryAction={{
-          content: 'Cancel Subscription',
+          content: "Cancel Subscription",
           onAction: handleCancelSubscription,
           destructive: true,
-          loading: cancelSubscription.isPending
+          loading: cancelSubscription.isPending,
         }}
         secondaryActions={[
           {
-            content: 'Keep Subscription',
-            onAction: () => setCancelModalActive(false)
-          }
+            content: "Keep Subscription",
+            onAction: () => setCancelModalActive(false),
+          },
         ]}
       >
         <Modal.Section>
           <TextContainer>
-            <p>Are you sure you want to cancel this subscription? This action cannot be undone.</p>
+            <p>
+              Are you sure you want to cancel this subscription? This action
+              cannot be undone.
+            </p>
             <TextField
               label="Reason for cancellation"
               value={cancelReason}

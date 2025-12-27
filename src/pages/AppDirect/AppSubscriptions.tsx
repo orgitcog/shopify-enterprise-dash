@@ -1,6 +1,6 @@
-import React from 'react';
-import { Page } from '@shopify/polaris';
-import { SubscriptionList } from '../../components/AppDirect/SubscriptionList';
+import React from "react";
+import { Page } from "@shopify/polaris";
+import { SubscriptionList } from "../../components/AppDirect/SubscriptionList";
 
 export function AppSubscriptions() {
   return (

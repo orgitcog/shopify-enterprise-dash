@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from "react";
 
 interface Organization {
   id: string;
@@ -35,82 +35,89 @@ interface TestModeContextType {
 
 const defaultOrganizations: Organization[] = [
   {
-    id: 'org1',
-    name: 'North America Division',
+    id: "org1",
+    name: "North America Division",
     stores: [
       {
-        id: 'store1',
-        name: 'NA Fashion Direct',
-        domain: 'na-fashion.myshopify.com',
-        plan: 'enterprise',
-        status: 'active',
+        id: "store1",
+        name: "NA Fashion Direct",
+        domain: "na-fashion.myshopify.com",
+        plan: "enterprise",
+        status: "active",
         metrics: {
           revenue: 1250000,
           orders: 12500,
-          customers: 8500
+          customers: 8500,
         },
-        lastSync: new Date().toISOString()
+        lastSync: new Date().toISOString(),
       },
       {
-        id: 'store2',
-        name: 'NA Sports & Outdoor',
-        domain: 'na-sports.myshopify.com',
-        plan: 'enterprise',
-        status: 'active',
+        id: "store2",
+        name: "NA Sports & Outdoor",
+        domain: "na-sports.myshopify.com",
+        plan: "enterprise",
+        status: "active",
         metrics: {
           revenue: 980000,
           orders: 8900,
-          customers: 6200
+          customers: 6200,
         },
-        lastSync: new Date().toISOString()
-      }
-    ]
+        lastSync: new Date().toISOString(),
+      },
+    ],
   },
   {
-    id: 'org2',
-    name: 'European Division',
+    id: "org2",
+    name: "European Division",
     stores: [
       {
-        id: 'store3',
-        name: 'EU Fashion Collective',
-        domain: 'eu-fashion.myshopify.com',
-        plan: 'enterprise',
-        status: 'active',
+        id: "store3",
+        name: "EU Fashion Collective",
+        domain: "eu-fashion.myshopify.com",
+        plan: "enterprise",
+        status: "active",
         metrics: {
           revenue: 890000,
           orders: 7800,
-          customers: 5600
+          customers: 5600,
         },
-        lastSync: new Date().toISOString()
+        lastSync: new Date().toISOString(),
       },
       {
-        id: 'store4',
-        name: 'EU Lifestyle',
-        domain: 'eu-lifestyle.myshopify.com',
-        plan: 'enterprise',
-        status: 'active',
+        id: "store4",
+        name: "EU Lifestyle",
+        domain: "eu-lifestyle.myshopify.com",
+        plan: "enterprise",
+        status: "active",
         metrics: {
           revenue: 670000,
           orders: 5900,
-          customers: 4200
+          customers: 4200,
         },
-        lastSync: new Date().toISOString()
-      }
-    ]
-  }
+        lastSync: new Date().toISOString(),
+      },
+    ],
+  },
 ];
 
 const defaultTestStoreData = {
-  name: 'Test Store',
-  domain: 'test-store.myshopify.com',
-  plan: 'enterprise'
+  name: "Test Store",
+  domain: "test-store.myshopify.com",
+  plan: "enterprise",
 };
 
-const TestModeContext = createContext<TestModeContextType | undefined>(undefined);
+const TestModeContext = createContext<TestModeContextType | undefined>(
+  undefined,
+);
 
-export const TestModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isTestMode, setIsTestMode] = useState(import.meta.env.VITE_TEST_MODE === 'true');
-  const [organizations, setOrganizations] = useState<Organization[]>(defaultOrganizations);
+export const TestModeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [isTestMode, setIsTestMode] = useState(
+    import.meta.env.VITE_TEST_MODE === "true",
+  );
+  const [organizations, setOrganizations] =
+    useState<Organization[]>(defaultOrganizations);
   const [testStoreData, setTestStoreData] = useState(defaultTestStoreData);
 
   const toggleTestMode = () => {
@@ -126,14 +133,16 @@ export const TestModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   return (
-    <TestModeContext.Provider value={{ 
-      isTestMode, 
-      toggleTestMode, 
-      organizations,
-      updateOrganizations,
-      testStoreData,
-      updateTestStoreData
-    }}>
+    <TestModeContext.Provider
+      value={{
+        isTestMode,
+        toggleTestMode,
+        organizations,
+        updateOrganizations,
+        testStoreData,
+        updateTestStoreData,
+      }}
+    >
       {children}
     </TestModeContext.Provider>
   );
@@ -142,7 +151,7 @@ export const TestModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 export const useTestMode = () => {
   const context = useContext(TestModeContext);
   if (context === undefined) {
-    throw new Error('useTestMode must be used within a TestModeProvider');
+    throw new Error("useTestMode must be used within a TestModeProvider");
   }
   return context;
 };

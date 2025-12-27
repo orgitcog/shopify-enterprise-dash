@@ -1,14 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Card, FormLayout, TextField, Button, Banner, Text, Link } from '@shopify/polaris';
-import { supabase } from '../../lib/supabase';
-import { useNavigate } from 'react-router-dom';
-import { Lock } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  FormLayout,
+  TextField,
+  Button,
+  Banner,
+  Text,
+  Link,
+} from "@shopify/polaris";
+import { supabase } from "../../lib/supabase";
+import { useNavigate } from "react-router-dom";
+import { Lock } from "lucide-react";
 
 export default function ResetPassword() {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -16,51 +24,53 @@ export default function ResetPassword() {
   useEffect(() => {
     const hash = window.location.hash.substring(1);
     if (!hash) {
-      setErrorMessage('Invalid or missing reset token. Please try requesting a new password reset.');
+      setErrorMessage(
+        "Invalid or missing reset token. Please try requesting a new password reset.",
+      );
     }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
+    setErrorMessage("");
+    setSuccessMessage("");
 
     // Validate inputs
     if (!password || !confirmPassword) {
-      setErrorMessage('Please fill in all required fields');
+      setErrorMessage("Please fill in all required fields");
       return;
     }
 
     if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match');
+      setErrorMessage("Passwords do not match");
       return;
     }
 
     if (password.length < 6) {
-      setErrorMessage('Password must be at least 6 characters long');
+      setErrorMessage("Password must be at least 6 characters long");
       return;
     }
 
     try {
       setLoading(true);
-      
+
       // Get the hash token from the URL
       const _hash = window.location.hash.substring(1);
-      
+
       // Use Supabase to update the password with the token
       const { error } = await supabase.auth.updateUser({ password });
 
       if (error) {
         setErrorMessage(error.message);
       } else {
-        setSuccessMessage('Password has been reset successfully!');
+        setSuccessMessage("Password has been reset successfully!");
         setTimeout(() => {
-          navigate('/login');
+          navigate("/login");
         }, 3000);
       }
     } catch (error) {
-      setErrorMessage('An unexpected error occurred. Please try again later.');
-      console.error('Password reset error:', error);
+      setErrorMessage("An unexpected error occurred. Please try again later.");
+      console.error("Password reset error:", error);
     } finally {
       setLoading(false);
     }
@@ -71,19 +81,21 @@ export default function ResetPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">Reset Password</h1>
-          <p className="text-gray-600 mt-2">Create a new password for your account</p>
+          <p className="text-gray-600 mt-2">
+            Create a new password for your account
+          </p>
         </div>
 
         <Card>
           <Card.Section>
             {errorMessage && (
-              <Banner status="critical" onDismiss={() => setErrorMessage('')}>
+              <Banner status="critical" onDismiss={() => setErrorMessage("")}>
                 <p>{errorMessage}</p>
               </Banner>
             )}
 
             {successMessage && (
-              <Banner status="success" onDismiss={() => setSuccessMessage('')}>
+              <Banner status="success" onDismiss={() => setSuccessMessage("")}>
                 <p>{successMessage}</p>
               </Banner>
             )}
@@ -119,8 +131,7 @@ export default function ResetPassword() {
 
                 <div className="text-center mt-4">
                   <Text variant="bodyMd" as="p">
-                    Remember your password?{' '}
-                    <Link url="/login">Log in</Link>
+                    Remember your password? <Link url="/login">Log in</Link>
                   </Text>
                 </div>
               </FormLayout>

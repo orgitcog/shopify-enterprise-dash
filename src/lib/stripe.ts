@@ -1,14 +1,14 @@
-import { loadStripe } from '@stripe/stripe-js';
-import Stripe from 'stripe';
-import { supabase } from './supabase';
+import { loadStripe } from "@stripe/stripe-js";
+import Stripe from "stripe";
+import { supabase } from "./supabase";
 
 // Initialize Stripe
-const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY || '';
-const stripeSecretKey = import.meta.env.VITE_STRIPE_SECRET_KEY || '';
+const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY || "";
+const stripeSecretKey = import.meta.env.VITE_STRIPE_SECRET_KEY || "";
 
 export const stripePromise = loadStripe(stripePublicKey);
 export const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2023-10-16',
+  apiVersion: "2023-10-16",
 });
 
 // Types
@@ -43,9 +43,9 @@ export interface StripePrice {
   active: boolean;
   currency: string;
   unit_amount: number;
-  type: 'one_time' | 'recurring';
+  type: "one_time" | "recurring";
   recurring?: {
-    interval: 'day' | 'week' | 'month' | 'year';
+    interval: "day" | "week" | "month" | "year";
     interval_count: number;
   };
   metadata: Record<string, string>;
@@ -54,7 +54,14 @@ export interface StripePrice {
 export interface StripeSubscription {
   id: string;
   customer: string;
-  status: 'active' | 'past_due' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'trialing' | 'unpaid';
+  status:
+    | "active"
+    | "past_due"
+    | "canceled"
+    | "incomplete"
+    | "incomplete_expired"
+    | "trialing"
+    | "unpaid";
   current_period_start: number;
   current_period_end: number;
   items: {
@@ -70,7 +77,7 @@ export interface StripeSubscription {
 export interface StripeInvoice {
   id: string;
   customer: string;
-  status: 'draft' | 'open' | 'paid' | 'uncollectible' | 'void';
+  status: "draft" | "open" | "paid" | "uncollectible" | "void";
   amount_due: number;
   amount_paid: number;
   currency: string;
@@ -92,12 +99,14 @@ export const createCustomer = async (data: {
     const customer = await stripe.customers.create(data);
     return customer as StripeCustomer;
   } catch (error) {
-    console.error('Error creating Stripe customer:', error);
+    console.error("Error creating Stripe customer:", error);
     throw error;
   }
 };
 
-export const getCustomer = async (customerId: string): Promise<StripeCustomer | null> => {
+export const getCustomer = async (
+  customerId: string,
+): Promise<StripeCustomer | null> => {
   try {
     const customer = await stripe.customers.retrieve(customerId);
     return customer as StripeCustomer;
@@ -109,7 +118,7 @@ export const getCustomer = async (customerId: string): Promise<StripeCustomer | 
 
 export const updateCustomer = async (
   customerId: string,
-  data: Partial<StripeCustomer>
+  data: Partial<StripeCustomer>,
 ): Promise<StripeCustomer | null> => {
   try {
     const customer = await stripe.customers.update(customerId, data);
@@ -130,12 +139,14 @@ export const createProduct = async (data: {
     const product = await stripe.products.create(data);
     return product as StripeProduct;
   } catch (error) {
-    console.error('Error creating Stripe product:', error);
+    console.error("Error creating Stripe product:", error);
     throw error;
   }
 };
 
-export const getProduct = async (productId: string): Promise<StripeProduct | null> => {
+export const getProduct = async (
+  productId: string,
+): Promise<StripeProduct | null> => {
   try {
     const product = await stripe.products.retrieve(productId);
     return product as StripeProduct;
@@ -151,7 +162,7 @@ export const createPrice = async (data: {
   unit_amount: number;
   currency: string;
   recurring?: {
-    interval: 'day' | 'week' | 'month' | 'year';
+    interval: "day" | "week" | "month" | "year";
     interval_count?: number;
   };
 }): Promise<StripePrice> => {
@@ -159,12 +170,14 @@ export const createPrice = async (data: {
     const price = await stripe.prices.create(data);
     return price as StripePrice;
   } catch (error) {
-    console.error('Error creating Stripe price:', error);
+    console.error("Error creating Stripe price:", error);
     throw error;
   }
 };
 
-export const getPrice = async (priceId: string): Promise<StripePrice | null> => {
+export const getPrice = async (
+  priceId: string,
+): Promise<StripePrice | null> => {
   try {
     const price = await stripe.prices.retrieve(priceId);
     return price as StripePrice;
@@ -183,33 +196,45 @@ export const createSubscription = async (data: {
     const subscription = await stripe.subscriptions.create(data);
     return subscription as StripeSubscription;
   } catch (error) {
-    console.error('Error creating Stripe subscription:', error);
+    console.error("Error creating Stripe subscription:", error);
     throw error;
   }
 };
 
-export const getSubscription = async (subscriptionId: string): Promise<StripeSubscription | null> => {
+export const getSubscription = async (
+  subscriptionId: string,
+): Promise<StripeSubscription | null> => {
   try {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     return subscription as StripeSubscription;
   } catch (error) {
-    console.error(`Error fetching Stripe subscription ${subscriptionId}:`, error);
+    console.error(
+      `Error fetching Stripe subscription ${subscriptionId}:`,
+      error,
+    );
     return null;
   }
 };
 
-export const cancelSubscription = async (subscriptionId: string): Promise<StripeSubscription | null> => {
+export const cancelSubscription = async (
+  subscriptionId: string,
+): Promise<StripeSubscription | null> => {
   try {
     const subscription = await stripe.subscriptions.cancel(subscriptionId);
     return subscription as StripeSubscription;
   } catch (error) {
-    console.error(`Error canceling Stripe subscription ${subscriptionId}:`, error);
+    console.error(
+      `Error canceling Stripe subscription ${subscriptionId}:`,
+      error,
+    );
     return null;
   }
 };
 
 // Invoices
-export const getInvoice = async (invoiceId: string): Promise<StripeInvoice | null> => {
+export const getInvoice = async (
+  invoiceId: string,
+): Promise<StripeInvoice | null> => {
   try {
     const invoice = await stripe.invoices.retrieve(invoiceId);
     return invoice as StripeInvoice;
@@ -231,7 +256,7 @@ export const createPaymentIntent = async (data: {
     const paymentIntent = await stripe.paymentIntents.create(data);
     return paymentIntent;
   } catch (error) {
-    console.error('Error creating payment intent:', error);
+    console.error("Error creating payment intent:", error);
     throw error;
   }
 };
@@ -240,24 +265,24 @@ export const createPaymentIntent = async (data: {
 export const handleWebhook = async (
   signature: string,
   payload: string | Buffer,
-  webhookSecret: string
+  webhookSecret: string,
 ) => {
   try {
     const event = stripe.webhooks.constructEvent(
       payload,
       signature,
-      webhookSecret
+      webhookSecret,
     );
 
     // Handle different event types
     switch (event.type) {
-      case 'payment_intent.succeeded':
+      case "payment_intent.succeeded":
         await handlePaymentSuccess(event.data.object);
         break;
-      case 'customer.subscription.updated':
+      case "customer.subscription.updated":
         await handleSubscriptionUpdate(event.data.object);
         break;
-      case 'customer.subscription.deleted':
+      case "customer.subscription.deleted":
         await handleSubscriptionCancellation(event.data.object);
         break;
       // Add more event handlers as needed
@@ -265,7 +290,7 @@ export const handleWebhook = async (
 
     return { success: true };
   } catch (error) {
-    console.error('Error handling Stripe webhook:', error);
+    console.error("Error handling Stripe webhook:", error);
     throw error;
   }
 };
@@ -274,12 +299,12 @@ export const handleWebhook = async (
 const handlePaymentSuccess = async (paymentIntent: any) => {
   // Update order status in your database
   const { error } = await supabase
-    .from('orders')
-    .update({ status: 'paid', stripe_payment_id: paymentIntent.id })
-    .eq('stripe_payment_intent', paymentIntent.id);
+    .from("orders")
+    .update({ status: "paid", stripe_payment_id: paymentIntent.id })
+    .eq("stripe_payment_intent", paymentIntent.id);
 
   if (error) {
-    console.error('Error updating order status:', error);
+    console.error("Error updating order status:", error);
     throw error;
   }
 };
@@ -287,15 +312,17 @@ const handlePaymentSuccess = async (paymentIntent: any) => {
 const handleSubscriptionUpdate = async (subscription: any) => {
   // Update subscription status in your database
   const { error } = await supabase
-    .from('subscriptions')
+    .from("subscriptions")
     .update({
       status: subscription.status,
-      current_period_end: new Date(subscription.current_period_end * 1000).toISOString()
+      current_period_end: new Date(
+        subscription.current_period_end * 1000,
+      ).toISOString(),
     })
-    .eq('stripe_subscription_id', subscription.id);
+    .eq("stripe_subscription_id", subscription.id);
 
   if (error) {
-    console.error('Error updating subscription status:', error);
+    console.error("Error updating subscription status:", error);
     throw error;
   }
 };
@@ -303,15 +330,15 @@ const handleSubscriptionUpdate = async (subscription: any) => {
 const handleSubscriptionCancellation = async (subscription: any) => {
   // Update subscription status in your database
   const { error } = await supabase
-    .from('subscriptions')
+    .from("subscriptions")
     .update({
-      status: 'cancelled',
-      cancelled_at: new Date().toISOString()
+      status: "cancelled",
+      cancelled_at: new Date().toISOString(),
     })
-    .eq('stripe_subscription_id', subscription.id);
+    .eq("stripe_subscription_id", subscription.id);
 
   if (error) {
-    console.error('Error updating subscription cancellation:', error);
+    console.error("Error updating subscription cancellation:", error);
     throw error;
   }
 };

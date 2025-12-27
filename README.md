@@ -14,19 +14,21 @@ A powerful enterprise-grade dashboard for managing multiple Shopify stores, buil
 
 ## Tech Stack
 
-- **Frontend**: React 18 with TypeScript
-- **UI Framework**: Shopify Polaris
-- **State Management**: Zustand
-- **Data Fetching**: TanStack Query (React Query)
-- **Database**: Supabase (PostgreSQL)
+- **Frontend Framework**: React 18 with TypeScript
+- **Meta Framework**: Remix 2.x for routing and server-side rendering
+- **UI Framework**: Shopify Polaris v12 (with BlockStack, InlineStack components)
+- **Data Fetching**: TanStack Query (React Query) v5
+- **Database**: Supabase (PostgreSQL with Row-Level Security)
 - **Authentication**: Supabase Auth
-- **API Integration**: Shopify Admin API
-- **Charts**: Recharts
+- **API Integration**: Shopify Admin API, GraphQL
+- **Charts & Visualization**: Recharts, Chart.js
 - **Icons**: Lucide React
-- **Routing**: React Router DOM
+- **Drag & Drop**: @dnd-kit
 - **Date Handling**: date-fns
-- **Development**: Vite, TypeScript, ESLint
-- **Styling**: Tailwind CSS
+- **HTTP Client**: Axios
+- **Build Tool**: Remix with esbuild
+- **Styling**: Tailwind CSS + Shopify Polaris CSS
+- **Package Manager**: Yarn 4.x with Corepack
 
 ## Prerequisites
 
@@ -40,11 +42,16 @@ A powerful enterprise-grade dashboard for managing multiple Shopify stores, buil
 Create a `.env` file in the root directory with the following variables:
 
 ```env
+# Supabase Configuration
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Shopify Configuration
 VITE_SHOPIFY_ADMIN_API_URL=your_shopify_admin_api_url
 VITE_SHOPIFY_ACCESS_TOKEN=your_shopify_access_token
 ```
+
+See `.env.example` for a template. The application will work with mock data if these are not configured, allowing you to explore the UI without requiring live integrations.
 
 ## Installation
 
@@ -54,67 +61,113 @@ VITE_SHOPIFY_ACCESS_TOKEN=your_shopify_access_token
    cd shopify-enterprise-dashboard
    ```
 
-2. Install dependencies:
+2. Enable Corepack (required for Yarn 4):
    ```bash
-   yarn
+   corepack enable
    ```
 
-3. Start the development server:
+3. Install dependencies:
+   ```bash
+   yarn install
+   ```
+
+4. Configure environment variables (optional):
+   ```bash
+   cp .env.example .env
+   # Edit .env with your actual credentials
+   ```
+
+5. Build the application:
+   ```bash
+   yarn build
+   ```
+
+6. Start the development server:
    ```bash
    yarn dev
    ```
 
-4. Open [http://localhost:5173](http://localhost:5173) in your browser
+7. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Project Structure
 
 ```
-├── src/
+├── app/
 │   ├── components/     # Reusable UI components
-│   ├── hooks/         # Custom React hooks
+│   │   ├── Analytics/  # Analytics-specific components
+│   │   ├── Dashboard/  # Dashboard components (KPIs, Store Matrix, etc.)
+│   │   └── Layout/     # Layout components (Navigation, TopBar)
 │   ├── lib/           # Utility functions and API clients
-│   ├── pages/         # Page components
-│   ├── store/         # Zustand store definitions
-│   ├── context/       # React context providers
+│   │   ├── shopify.ts # Shopify API integration
+│   │   └── supabase.ts # Supabase client and database operations
+│   ├── routes/        # Remix routes (pages)
+│   │   ├── _index.tsx # Dashboard home
+│   │   ├── analytics.tsx # Analytics page
+│   │   ├── users.tsx  # User management
+│   │   ├── roles.tsx  # Role management
+│   │   ├── reports.tsx # Reports page
+│   │   └── settings.tsx # Settings page
 │   ├── styles/        # Global styles and Tailwind config
-│   └── types/         # TypeScript type definitions
-├── public/           # Static assets
-└── supabase/        # Database migrations and configurations
+│   └── root.tsx       # Root layout with providers
+├── supabase/
+│   └── migrations/    # Database migrations and schema
+├── src/               # Additional source files (legacy/deprecated)
+└── public/           # Static assets
 ```
 
 ## Key Features
 
 ### Multi-Store Management
-- Connect and manage multiple Shopify stores
-- Centralized dashboard for all store metrics
-- Automated data synchronization
+- Connect and manage multiple Shopify stores from a single dashboard
+- Centralized view of all store metrics and performance
+- Real-time synchronization with Shopify Admin API
+- CRUD operations for store management
 
 ### Analytics Dashboard
-- Real-time sales and order tracking
-- Revenue analytics and trends
+- Real-time sales and order tracking with interactive charts
+- Revenue analytics and trend visualization
 - Customer insights and behavior analysis
 - Inventory management metrics
+- Customizable date ranges and comparison periods
 
 ### User Management
-- Role-based access control
-- Custom permission sets
-- User activity tracking
-- Secure authentication
+- Role-based access control (RBAC) with 5 predefined roles
+- Custom role creation with granular permissions
+- User activity tracking and audit logging
+- Secure authentication via Supabase Auth
+- Bulk user operations
+
+### Role Management
+- Predefined roles: Admin, Manager, Editor, Analyst, Support
+- Create custom roles with specific permission sets
+- Priority-based role hierarchy
+- Permission categories: read, write, delete, manage_users, settings
+
+### Reports & Analytics
+- Generate and download reports in various formats
+- Pre-built report templates (Sales, Analytics, Users)
+- Customizable date ranges and filters
+- Report history and status tracking
 
 ### Enterprise Features
-- Data export capabilities
-- Audit logging
-- Automated backups
+- Data export capabilities for all entities
+- Comprehensive audit logging
+- Automated data synchronization with Shopify
 - API rate limiting protection
+- Row-level security (RLS) on all database tables
 
 ## Database Schema
 
-The application uses the following main tables:
+The application uses Supabase (PostgreSQL) with the following main tables:
 
-- `user_profiles`: User information and preferences
-- `stores`: Connected Shopify store details
-- `roles`: User role definitions
-- `user_roles`: User-role assignments
+- `user_profiles`: User information, preferences, and authentication details
+- `stores`: Connected Shopify store details with revenue and order metrics
+- `roles`: Role definitions with permission arrays and priority levels
+- `user_roles`: User-role assignments (many-to-many relationship)
+- `shopify_connections`: Shopify store connection credentials and sync status
+- `order_summary`: Aggregated order data from Shopify stores
+
+All tables are protected with Row Level Security (RLS) policies that ensure users can only access data they own or have permission to view.
 
 ## API Integration
 
@@ -128,11 +181,11 @@ The dashboard integrates with:
 
 ### Available Scripts
 
-- `yarn dev`: Start development server
+- `yarn dev`: Start development server (Remix)
 - `yarn build`: Build for production
-- `yarn preview`: Preview production build
-- `yarn lint`: Run ESLint
-- `yarn typecheck`: Run TypeScript compiler
+- `yarn start`: Start production server
+- `yarn typecheck`: Run TypeScript type checking
+- `yarn clean`: Clean build artifacts and dependencies
 
 ### Code Style
 

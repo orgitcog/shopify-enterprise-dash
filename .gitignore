@@ -45,3 +45,17 @@ lerna-debug.log*
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
+
+# Build outputs
+build
+
+# Test outputs
+coverage
+test-results
+playwright-report
+.nyc_output
+
+# Release artifacts
+*.tar.gz
+*.zip
+release

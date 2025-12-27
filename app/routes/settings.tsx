@@ -12,7 +12,7 @@ import {
   Banner,
   Text,
   Tabs,
-  Stack,
+  BlockStack,
   Select,
   Badge
 } from '@shopify/polaris';
@@ -166,7 +166,7 @@ export default function SettingsPage() {
                 {selected === 1 && (
                   <div className="mt-4 space-y-4">
                     <Card sectioned>
-                      <Stack vertical spacing="tight">
+                      <BlockStack gap="400">
                         <div className="flex items-center justify-between">
                           <div>
                             <Text as="h3" variant="headingMd">Shopify Integration</Text>
@@ -191,11 +191,11 @@ export default function SettingsPage() {
                           </Button>
                           <Button>Configure</Button>
                         </div>
-                      </Stack>
+                      </BlockStack>
                     </Card>
 
                     <Card sectioned>
-                      <Stack vertical spacing="tight">
+                      <BlockStack gap="400">
                         <div className="flex items-center justify-between">
                           <div>
                             <Text as="h3" variant="headingMd">Supabase Database</Text>
@@ -220,7 +220,7 @@ export default function SettingsPage() {
                           </Button>
                           <Button>Configure</Button>
                         </div>
-                      </Stack>
+                      </BlockStack>
                     </Card>
 
                     <Banner status="info">
@@ -253,7 +253,7 @@ export default function SettingsPage() {
                 {selected === 3 && (
                   <div className="mt-4">
                     <Card sectioned>
-                      <Stack vertical spacing="loose">
+                      <BlockStack gap="400">
                         <div>
                           <Text as="h3" variant="headingMd">Security Features</Text>
                           <Text as="p" variant="bodySm" color="subdued">
@@ -268,7 +268,7 @@ export default function SettingsPage() {
                           <li>API rate limiting and request validation</li>
                           <li>Audit logging for all critical operations</li>
                         </ul>
-                      </Stack>
+                      </BlockStack>
                     </Card>
                   </div>
                 )}

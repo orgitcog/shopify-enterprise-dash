@@ -14,7 +14,7 @@ import {
   TextField,
   Text,
   Checkbox,
-  Stack
+  BlockStack
 } from '@shopify/polaris';
 import { ShieldCheck, Plus } from 'lucide-react';
 
@@ -255,7 +255,7 @@ export default function Roles() {
               <div>
                 <Text as="h3" variant="headingSm">Permissions</Text>
                 <div className="mt-2 space-y-2">
-                  <Stack vertical>
+                  <BlockStack gap="200">
                     {availablePermissions.map(permission => (
                       <Checkbox
                         key={permission.value}
@@ -264,7 +264,7 @@ export default function Roles() {
                         onChange={() => handlePermissionToggle(permission.value)}
                       />
                     ))}
-                  </Stack>
+                  </BlockStack>
                 </div>
               </div>
             </FormLayout>

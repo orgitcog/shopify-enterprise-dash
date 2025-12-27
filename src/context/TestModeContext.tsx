@@ -114,7 +114,7 @@ export const TestModeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isTestMode, setIsTestMode] = useState(
-    import.meta.env.VITE_TEST_MODE === "true",
+    import.meta.env?.VITE_TEST_MODE === "true" || false,
   );
   const [organizations, setOrganizations] =
     useState<Organization[]>(defaultOrganizations);

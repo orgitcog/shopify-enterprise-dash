@@ -39,6 +39,10 @@ interface SettingsData {
   };
 }
 
+// Note: VITE_ prefixed environment variables are intentionally exposed to the client
+// as this is a client-side rendered application. Supabase anon key and Shopify API
+// integration happens client-side. For production, consider implementing server-side
+// API proxies for additional security.
 const mockSettings: SettingsData = {
   general: {
     companyName: 'My Enterprise',

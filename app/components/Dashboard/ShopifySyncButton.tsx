@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Toast } from '@shopify/polaris';
 import { RefreshCw } from 'lucide-react';
-import { useFetcher } from '@remix-run/react';
+import { useRevalidator } from '@remix-run/react';
 
 export function ShopifySyncButton() {
   const [showToast, setShowToast] = React.useState(false);
@@ -11,6 +11,7 @@ export function ShopifySyncButton() {
   });
   
   const [isSyncing, setIsSyncing] = React.useState(false);
+  const revalidator = useRevalidator();
 
   const handleSync = async () => {
     setIsSyncing(true);
@@ -26,8 +27,8 @@ export function ShopifySyncButton() {
       });
       setShowToast(true);
       
-      // Reload the page to show updated data
-      window.location.reload();
+      // Revalidate the current route to refresh data
+      revalidator.revalidate();
     } catch (error) {
       setToastContent({
         message: 'Failed to sync Shopify data. Please try again.',

@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const SHOPIFY_API_URL = process.env.VITE_SHOPIFY_ADMIN_API_URL || '';
 const SHOPIFY_ACCESS_TOKEN = process.env.VITE_SHOPIFY_ACCESS_TOKEN || '';
+const SHOPIFY_API_VERSION = '2024-01'; // Update this when new API versions are released
 
 export interface ShopInfo {
   name: string;
@@ -117,7 +118,7 @@ export async function syncShopifyData(storeUrl: string, accessToken: string) {
   try {
     // Fetch orders, products, and customers from Shopify
     const ordersResponse = await axios.get(
-      `https://${storeUrl}/admin/api/2024-01/orders.json`,
+      `https://${storeUrl}/admin/api/${SHOPIFY_API_VERSION}/orders.json`,
       {
         headers: {
           'X-Shopify-Access-Token': accessToken,

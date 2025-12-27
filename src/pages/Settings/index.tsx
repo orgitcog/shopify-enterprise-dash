@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Page, 
-  Layout, 
+  _Layout, 
   Card, 
   FormLayout, 
   TextField, 
@@ -18,7 +18,7 @@ export function Settings() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [currency, setCurrency] = useState('USD');
   const [timezone, setTimezone] = useState('America/New_York');
-  const [apiKey, setApiKey] = useState('••••••••••••••••');
+  const [apiKey, _setApiKey] = useState('••••••••••••••••');
   const [showRealKey, setShowRealKey] = useState(false);
 
   const handleTabChange = (selectedTabIndex: number) => {

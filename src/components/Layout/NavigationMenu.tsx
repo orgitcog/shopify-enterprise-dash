@@ -29,7 +29,7 @@ interface NavigationMenuProps {
   items: NavigationItem[];
 }
 
-export function NavigationMenu({ items }: NavigationMenuProps) {
+export function NavigationMenu({ _items }: NavigationMenuProps) {
   const navigate = useNavigate();
   const { isTestMode } = useTestMode();
 

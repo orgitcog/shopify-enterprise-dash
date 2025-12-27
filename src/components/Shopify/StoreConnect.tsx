@@ -7,7 +7,7 @@ import {
   Banner, 
   Text, 
   Modal,
-  Layout
+  _Layout
 } from '@shopify/polaris';
 import { Store, Link as LinkIcon } from 'lucide-react';
 import { connectToShopify } from '../../lib/shopifyApi';
@@ -20,7 +20,7 @@ export function StoreConnect() {
   const [successMessage, setSuccessMessage] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const { user } = useAuth();
+  const { _user } = useAuth();
 
   const handleConnect = async () => {
     // Clear messages

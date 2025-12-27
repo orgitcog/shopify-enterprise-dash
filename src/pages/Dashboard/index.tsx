@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Layout, Card, ButtonGroup, EmptyState } from '@shopify/polaris';
+import { Page, Layout, Card, _ButtonGroup, _EmptyState } from '@shopify/polaris';
 import { StoreMatrix } from './components/StoreMatrix';
 import { KPIOverview } from './components/KPIOverview';
 import { ShopifyStoreInfo } from './components/ShopifyStoreInfo';
@@ -9,7 +9,7 @@ import { ConnectedStores } from '../../components/Shopify/ConnectedStores';
 import { useAuth } from '../../context/AuthContext';
 
 export function Dashboard() {
-  const { user } = useAuth();
+  const { _user } = useAuth();
   
   return (
     <Page 

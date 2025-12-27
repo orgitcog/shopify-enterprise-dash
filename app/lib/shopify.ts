@@ -78,7 +78,7 @@ function getMockShopInfo(): ShopInfo {
   };
 }
 
-export async function getAnalytics(timeframe: string): Promise<AnalyticsData[]> {
+export async function getAnalytics(_timeframe: string): Promise<AnalyticsData[]> {
   try {
     // If API credentials are not configured, return mock data
     if (!SHOPIFY_API_URL || !SHOPIFY_ACCESS_TOKEN || SHOPIFY_ACCESS_TOKEN === 'placeholder-token') {

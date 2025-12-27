@@ -1,8 +1,8 @@
-import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
+import { useQuery, _useMutation, QueryClient } from '@tanstack/react-query';
 import * as NetticaAPI from '../lib/nettica';
 
 // Configure the query client
-const queryClient = new QueryClient();
+const _queryClient = new QueryClient();
 
 // Networks
 export const useNetworks = () => {

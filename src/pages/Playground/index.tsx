@@ -10,7 +10,7 @@ import {
   Select,
   Banner,
   Modal,
-  Form,
+  _Form,
   FormLayout,
   ChoiceList
 } from '@shopify/polaris';

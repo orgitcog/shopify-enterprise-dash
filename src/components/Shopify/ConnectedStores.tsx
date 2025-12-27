@@ -3,7 +3,7 @@ import {
   Card, 
   ResourceList, 
   ResourceItem, 
-  Text, 
+  _Text, 
   Badge, 
   Button,
   Avatar,

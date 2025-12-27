@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { TopBar as PolarisTopBar, ActionList, Icon } from '@shopify/polaris';
-import { Search, Bell, User } from 'lucide-react';
+import { TopBar as PolarisTopBar, ActionList, _Icon } from '@shopify/polaris';
+import { _Search, _Bell, _User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 

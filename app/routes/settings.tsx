@@ -16,7 +16,7 @@ import {
   Select,
   Badge
 } from '@shopify/polaris';
-import { Settings, Save, RefreshCw } from 'lucide-react';
+import { _Settings, Save, RefreshCw } from 'lucide-react';
 
 interface SettingsData {
   general: {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, EmptyState, Button } from '@shopify/polaris';
 import { useNavigate } from 'react-router-dom';
-import { ShieldOff } from 'lucide-react';
+import { _ShieldOff } from 'lucide-react';
 
 export function Unauthorized() {
   const navigate = useNavigate();

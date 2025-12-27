@@ -2,7 +2,13 @@ import React from 'react';
 import { Card, Text } from '@shopify/polaris';
 import { BarChart, ShoppingCart, Store, ArrowUpRight, DollarSign } from 'lucide-react';
 
-export function KPIOverview({ stores }: { stores: any[] }) {
+interface StoreData {
+  revenue: number;
+  orders: number;
+  status: string;
+}
+
+export function KPIOverview({ stores }: { stores: StoreData[] }) {
   // Calculate KPIs
   const totalRevenue = stores.reduce((sum, store) => sum + store.revenue, 0);
   const totalOrders = stores.reduce((sum, store) => sum + store.orders, 0);

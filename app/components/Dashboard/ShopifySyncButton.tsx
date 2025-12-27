@@ -29,7 +29,7 @@ export function ShopifySyncButton() {
       
       // Revalidate the current route to refresh data
       revalidator.revalidate();
-    } catch (error) {
+    } catch (_error) {
       setToastContent({
         message: 'Failed to sync Shopify data. Please try again.',
         error: true

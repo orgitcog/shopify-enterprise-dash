@@ -6,12 +6,12 @@ import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_NETSUITE_API_URL || 'https://rest.netsuite.com/app/site/hosting/restlet.nl';
 const ACCOUNT_ID = import.meta.env.VITE_NETSUITE_ACCOUNT_ID || '';
 const CONSUMER_KEY = import.meta.env.VITE_NETSUITE_CONSUMER_KEY || '';
-const CONSUMER_SECRET = import.meta.env.VITE_NETSUITE_CONSUMER_SECRET || '';
+const _CONSUMER_SECRET = import.meta.env.VITE_NETSUITE_CONSUMER_SECRET || '';
 const TOKEN_ID = import.meta.env.VITE_NETSUITE_TOKEN_ID || '';
-const TOKEN_SECRET = import.meta.env.VITE_NETSUITE_TOKEN_SECRET || '';
+const _TOKEN_SECRET = import.meta.env.VITE_NETSUITE_TOKEN_SECRET || '';
 
 // Browser-compatible hashing function (simplified for demo purposes)
-const generateSignature = (method: string, url: string, timestamp: string, nonce: string) => {
+const generateSignature = (_method: string, _url: string, _timestamp: string, _nonce: string) => {
   // In a production environment, use the oauth-1.0a library for proper OAuth signatures
   // This is a simplified placeholder that returns a mock signature
   return 'mock_signature_for_demo_purposes';

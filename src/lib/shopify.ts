@@ -94,7 +94,7 @@ export interface ShopifyAnalytics {
 }
 
 // API Functions
-export const getShopInfo = async (options?: ShopifyQueryOptions): Promise<ShopInfo> => {
+export const getShopInfo = async (_options?: ShopifyQueryOptions): Promise<ShopInfo> => {
   if (process.env.NODE_ENV === 'development') {
     return mockShopInfo;
   }
@@ -103,7 +103,7 @@ export const getShopInfo = async (options?: ShopifyQueryOptions): Promise<ShopIn
   return response.data.shop;
 };
 
-export const getProducts = async (first = 10, options?: ShopifyQueryOptions): Promise<ShopifyProduct[]> => {
+export const getProducts = async (first = 10, _options?: ShopifyQueryOptions): Promise<ShopifyProduct[]> => {
   if (process.env.NODE_ENV === 'development') {
     return mockProducts;
   }
@@ -112,7 +112,7 @@ export const getProducts = async (first = 10, options?: ShopifyQueryOptions): Pr
   return response.data.products;
 };
 
-export const getOrders = async (first = 10, options?: ShopifyQueryOptions): Promise<ShopifyOrder[]> => {
+export const getOrders = async (first = 10, _options?: ShopifyQueryOptions): Promise<ShopifyOrder[]> => {
   if (process.env.NODE_ENV === 'development') {
     return mockOrders;
   }
@@ -121,7 +121,7 @@ export const getOrders = async (first = 10, options?: ShopifyQueryOptions): Prom
   return response.data.orders;
 };
 
-export const getAnalytics = async (interval = 'MONTH', options?: ShopifyQueryOptions): Promise<ShopifyAnalytics[]> => {
+export const getAnalytics = async (interval = 'MONTH', _options?: ShopifyQueryOptions): Promise<ShopifyAnalytics[]> => {
   if (process.env.NODE_ENV === 'development') {
     return mockAnalytics;
   }

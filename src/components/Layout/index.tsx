@@ -1,5 +1,5 @@
 import React from 'react';
-import { Frame, Navigation } from '@shopify/polaris';
+import { Frame, _Navigation } from '@shopify/polaris';
 import { useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 

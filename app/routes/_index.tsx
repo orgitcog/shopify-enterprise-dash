@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Page, Layout, Card, ButtonGroup } from '@shopify/polaris';
+import { Page, Layout, Card, _ButtonGroup } from '@shopify/polaris';
 import { KPIOverview } from '../components/Dashboard/KPIOverview';
 import { StoreMatrix } from '../components/Dashboard/StoreMatrix';
 import { ShopifyStoreInfo } from '../components/Dashboard/ShopifyStoreInfo';
@@ -29,7 +29,7 @@ export async function loader() {
 }
 
 export default function Dashboard() {
-  const { stores, shopInfo, error } = useLoaderData<typeof loader>();
+  const { stores, shopInfo, _error } = useLoaderData<typeof loader>();
 
   return (
     <Page 

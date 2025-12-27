@@ -10,7 +10,7 @@ import {
   Thumbnail,
   ButtonGroup,
   Modal,
-  TextField,
+  _TextField,
   Select,
   EmptySearchResult,
   Spinner

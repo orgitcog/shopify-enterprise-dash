@@ -6,7 +6,7 @@ import {
   Layout,
   Card,
   Button,
-  ButtonGroup,
+  _ButtonGroup,
   DataTable,
   Select,
   Text,

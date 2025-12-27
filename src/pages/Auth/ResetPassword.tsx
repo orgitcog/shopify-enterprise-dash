@@ -45,7 +45,7 @@ export default function ResetPassword() {
       setLoading(true);
       
       // Get the hash token from the URL
-      const hash = window.location.hash.substring(1);
+      const _hash = window.location.hash.substring(1);
       
       // Use Supabase to update the password with the token
       const { error } = await supabase.auth.updateUser({ password });

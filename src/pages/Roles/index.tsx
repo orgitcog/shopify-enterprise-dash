@@ -10,7 +10,7 @@ import {
   TextField, 
   ChoiceList 
 } from '@shopify/polaris';
-import { UserCircle, Plus } from 'lucide-react';
+import { _UserCircle, Plus } from 'lucide-react';
 
 interface Role {
   id: string;

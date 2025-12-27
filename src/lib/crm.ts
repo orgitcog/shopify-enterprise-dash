@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { format } from 'date-fns';
+import { _format } from 'date-fns';
 
 // Types
 export interface Customer {

@@ -3,14 +3,14 @@ import {
   Page, 
   Card, 
   Tabs, 
-  Layout, 
+  _Layout, 
   Button, 
-  Icon, 
+  _Icon, 
   EmptyState,
-  ButtonGroup,
-  Text
+  _ButtonGroup,
+  _Text
 } from '@shopify/polaris';
-import { Download, BarChart, ArrowRightLeft, Users, DollarSign, Box, Calendar, Plus } from 'lucide-react';
+import { _Download, BarChart, ArrowRightLeft, Users, DollarSign, Box, Calendar, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export function Reports() {

@@ -19,7 +19,7 @@ import {
 } from '@shopify/polaris';
 import { useCustomers, useCreateCustomer } from '../../hooks/useCrmData';
 import { Customer } from '../../lib/crm';
-import { User, Mail, Phone, Building, Calendar, DollarSign, Tag } from 'lucide-react';
+import { _User, Mail, Phone, Building, _Calendar, _DollarSign, Tag } from 'lucide-react';
 
 export function CustomerList() {
   const { data: customers, isLoading, error } = useCustomers();

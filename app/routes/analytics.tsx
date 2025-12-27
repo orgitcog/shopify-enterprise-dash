@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from 'react';
-import { Page, Card, Tabs, Layout, Button, ButtonGroup, Select } from '@shopify/polaris';
+import { Page, Card, Tabs, _Layout, Button, ButtonGroup, Select } from '@shopify/polaris';
 import { CalendarRange } from 'lucide-react';
 import { ShopifyAnalytics } from '../components/Analytics/ShopifyAnalytics';
 import { getAnalytics } from '../lib/shopify';
@@ -23,7 +23,7 @@ export async function loader() {
 }
 
 export default function Analytics() {
-  const { analyticsData, error } = useLoaderData<typeof loader>();
+  const { analyticsData, _error } = useLoaderData<typeof loader>();
   const [selected, setSelected] = useState(0);
   const [dateRange, setDateRange] = useState({
     start: new Date(new Date().setDate(new Date().getDate() - 30)),

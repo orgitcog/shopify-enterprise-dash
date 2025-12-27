@@ -3,7 +3,7 @@ import {
   Card, 
   ResourceList, 
   ResourceItem,
-  Avatar, 
+  _Avatar, 
   Badge, 
   Button, 
   ButtonGroup,
@@ -41,7 +41,7 @@ export function StoreMatrix() {
     setSearchValue(value);
   };
 
-  const handleStatusChange = (value: string | null) => {
+  const _handleStatusChange = (value: string | null) => {
     setSelectedStatus(value);
   };
 
@@ -79,7 +79,7 @@ export function StoreMatrix() {
   };
 
   // Define the rows for the DataTable
-  const rows = filteredStores.map((store) => [
+  const _rows = filteredStores.map((store) => [
     store.name,
     store.organizationName,
     store.domain,

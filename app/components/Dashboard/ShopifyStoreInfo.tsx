@@ -1,7 +1,18 @@
-import React from 'react';
-import { Card, TextContainer, SkeletonBodyText, SkeletonDisplayText } from '@shopify/polaris';
+import { Card, TextContainer } from '@shopify/polaris';
 
-export function ShopifyStoreInfo({ shopInfo }: { shopInfo: any }) {
+interface ShopPlan {
+  displayName?: string;
+  shopifyPlus?: boolean;
+}
+
+interface ShopInfo {
+  name?: string;
+  myshopifyDomain?: string;
+  email?: string;
+  plan?: ShopPlan;
+}
+
+export function ShopifyStoreInfo({ shopInfo }: { shopInfo: ShopInfo | null }) {
   if (!shopInfo) {
     return (
       <Card sectioned title="Store Information">

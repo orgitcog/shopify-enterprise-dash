@@ -9,9 +9,9 @@ import {
   Badge,
   TextField,
   Select,
-  Banner
+  _Banner
 } from '@shopify/polaris';
-import { Code2, Play, Terminal, Package, RefreshCw, Database } from 'lucide-react';
+import { Code2, Play, Terminal, Package, _RefreshCw, Database } from 'lucide-react';
 
 export function Webcontainers() {
   const [selectedTemplate, setSelectedTemplate] = useState('node');

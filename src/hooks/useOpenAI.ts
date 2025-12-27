@@ -94,7 +94,7 @@ export const useThreadMessages = (threadId: string) => {
 // Custom hook for managing a chat conversation with an assistant
 export const useAssistantChat = (assistantId: string) => {
   const [threadId, setThreadId] = useState<string | null>(null);
-  const [runId, setRunId] = useState<string | null>(null);
+  const [_runId, setRunId] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   

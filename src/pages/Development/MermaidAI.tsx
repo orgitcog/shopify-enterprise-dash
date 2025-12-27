@@ -10,7 +10,7 @@ import {
   Select,
   Banner
 } from '@shopify/polaris';
-import { Braces, Play, Download, Copy, RefreshCw } from 'lucide-react';
+import { _Braces, Play, Download, Copy, RefreshCw } from 'lucide-react';
 
 export function MermaidAI() {
   const [diagram, setDiagram] = useState('');

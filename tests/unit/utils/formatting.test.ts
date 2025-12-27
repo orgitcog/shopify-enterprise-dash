@@ -68,15 +68,16 @@ describe('Utility Functions', () => {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
+        timeZone: 'UTC',
       }).format(new Date(date));
     };
 
     it('should format date string correctly', () => {
-      expect(formatDate('2025-01-15')).toBe('Jan 15, 2025');
+      expect(formatDate('2025-01-15T12:00:00Z')).toBe('Jan 15, 2025');
     });
 
     it('should format Date object correctly', () => {
-      expect(formatDate(new Date('2025-06-20'))).toBe('Jun 20, 2025');
+      expect(formatDate(new Date('2025-06-20T12:00:00Z'))).toBe('Jun 20, 2025');
     });
   });
 

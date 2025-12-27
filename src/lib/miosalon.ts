@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { format } from 'date-fns';
+import { _format } from 'date-fns';
 
 // Types
 export interface Salon {
@@ -406,8 +406,8 @@ export const createClient = async (client: Omit<Client, 'id' | 'created_at' | 't
 // Analytics
 export const getSalonAnalytics = async (
   salonId: string,
-  startDate?: string,
-  endDate?: string
+  _startDate?: string,
+  _endDate?: string
 ) => {
   try {
     // In a real implementation, this would query analytics data from the database

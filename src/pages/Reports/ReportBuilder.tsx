@@ -8,9 +8,9 @@ import {
   Text,
   TextField,
   Select,
-  DropZone,
+  _DropZone,
   Stack,
-  Banner
+  _Banner
 } from '@shopify/polaris';
 import { 
   DndContext, 
@@ -27,7 +27,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { BarChart, LineChart, PieChart, Download, Save, Play, Settings } from 'lucide-react';
+import { BarChart, _LineChart, _PieChart, Download, Save, Play, Settings } from 'lucide-react';
 
 interface ReportComponent {
   id: string;

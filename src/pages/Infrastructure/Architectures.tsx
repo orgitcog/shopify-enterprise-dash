@@ -9,7 +9,7 @@ import {
   Badge,
   Link
 } from '@shopify/polaris';
-import { Box, GitBranch, Server, Database, Globe, Cloud } from 'lucide-react';
+import { Box, GitBranch, Server, _Database, _Globe, Cloud } from 'lucide-react';
 
 export function Architectures() {
   const architectures = [

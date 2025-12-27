@@ -10,12 +10,12 @@ import {
   Link,
   ProgressBar
 } from '@shopify/polaris';
-import { Network, Wifi, Globe, Activity, Server } from 'lucide-react';
+import { Network, Wifi, Globe, Activity, _Server } from 'lucide-react';
 import { useNetworks, useNetworkMetrics } from '../../hooks/useNetticaData';
 
 export function Networks() {
-  const { data: networks, isLoading, error } = useNetworks();
-  const { data: metrics } = useNetworkMetrics('net1');
+  const { data: networks, _isLoading, error } = useNetworks();
+  const { data: _metrics } = useNetworkMetrics('net1');
 
   const getStatusBadge = (status: string) => {
     switch (status) {

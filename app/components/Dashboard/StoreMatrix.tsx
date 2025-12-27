@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   DataTable, 
   Badge, 
@@ -7,7 +7,6 @@ import {
   Button, 
   ButtonGroup,
   Pagination,
-  TextField,
   EmptySearchResult
 } from '@shopify/polaris';
 import { Download, RefreshCw } from 'lucide-react';

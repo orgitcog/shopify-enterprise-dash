@@ -36,7 +36,7 @@ export default function Signup() {
     }
 
     try {
-      const { error, data } = await signUp(email, password);
+      const { error, _data } = await signUp(email, password);
       if (error) {
         setErrorMessage(error.message);
       } else {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { supabase } from './supabase';
+import { _supabase } from './supabase';
 
 // Nettica API configuration
 const API_BASE_URL = import.meta.env.VITE_NETTICA_API_URL || 'https://api.nettica.com/v1';

@@ -7,7 +7,7 @@ import {
   Avatar, 
   Text,
   Badge,
-  Button,
+  _Button,
   Modal,
   Form,
   FormLayout,
@@ -31,8 +31,8 @@ export function Users() {
   const [searchValue, setSearchValue] = useState('');
   const [modalActive, setModalActive] = useState(false);
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Staff' });
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { _user } = useAuth();
+  const _navigate = useNavigate();
 
   // Mock data for users
   const users: User[] = [

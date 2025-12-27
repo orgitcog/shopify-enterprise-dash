@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
-import { TopBar as PolarisTopBar, ActionList, Icon } from '@shopify/polaris';
-import { Search, Bell, User } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { TopBar as PolarisTopBar, ActionList } from '@shopify/polaris';
+// Icons available for future use: Search, Bell, User from 'lucide-react'
 
 export function TopBar() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);

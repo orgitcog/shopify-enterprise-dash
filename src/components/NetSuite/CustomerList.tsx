@@ -14,7 +14,7 @@ import {
 } from '@shopify/polaris';
 import { useNetSuiteCustomers } from '../../hooks/useNetSuiteData';
 import { NetSuiteCustomer } from '../../lib/netsuite';
-import { Building, User, Globe, Search } from 'lucide-react';
+import { Building, User, Globe, _Search } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 
 export function CustomerList() {

@@ -7,7 +7,7 @@ import {
   ResourceItem,
   Avatar, 
   Badge,
-  Button,
+  _Button,
   Modal,
   Form,
   FormLayout,

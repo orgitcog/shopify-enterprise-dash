@@ -11,6 +11,8 @@
 dist
 dist-ssr
 *.local
+build
+.cache
 
 # Dependencies
 node_modules

@@ -8,6 +8,7 @@ import {
   BarChart3,
   FileText,
   Settings,
+  Handshake,
 } from "lucide-react";
 import { TopBar } from "./TopBar";
 import { NavigationMenu } from "./NavigationMenu";
@@ -33,6 +34,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       icon: ShieldCheck,
       url: "/roles",
       selected: location.pathname.startsWith("/roles"),
+    },
+    {
+      label: "Partners",
+      icon: Handshake,
+      url: "/partners",
+      selected: location.pathname.startsWith("/partners"),
     },
     {
       label: "Analytics",

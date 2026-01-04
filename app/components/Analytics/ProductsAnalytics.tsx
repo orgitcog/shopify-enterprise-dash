@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, DataTable, Badge, ProgressBar, BlockStack, InlineStack, Text, Thumbnail } from '@shopify/polaris';
-import { ImageIcon } from '@shopify/polaris-icons';
+import { ImageMajor } from '@shopify/polaris-icons';
 
 export interface ProductPerformance {
   id: string;
@@ -45,7 +45,7 @@ export function ProductsAnalytics({ data }: ProductsAnalyticsProps) {
 
     return [
       <InlineStack gap="300" align="start" blockAlign="center" key={product.id}>
-        <Thumbnail source={ImageIcon} alt={product.name} size="small" />
+        <Thumbnail source={ImageMajor} alt={product.name} size="small" />
         <BlockStack gap="050">
           <Text as="span" variant="bodyMd" fontWeight="semibold">{product.name}</Text>
           <Text as="span" variant="bodySm" tone="subdued">{product.sku}</Text>

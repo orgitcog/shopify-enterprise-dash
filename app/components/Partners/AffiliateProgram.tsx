@@ -15,7 +15,7 @@ import {
   Tooltip,
   Icon
 } from '@shopify/polaris';
-import { ClipboardIcon, LinkIcon } from '@shopify/polaris-icons';
+import { ClipboardMinor, LinkMinor } from '@shopify/polaris-icons';
 import type { AffiliateLink, Referral, Partner } from './types';
 
 interface AffiliateProgramProps {
@@ -78,7 +78,7 @@ export function AffiliateProgram({ affiliateLinks, referrals, partners, onCreate
 
     return [
       <InlineStack gap="200" align="start" blockAlign="center" key={link.id}>
-        <Icon source={LinkIcon} tone="subdued" />
+        <Icon source={LinkMinor} tone="subdued" />
         <BlockStack gap="050">
           <Text as="span" variant="bodyMd" fontWeight="semibold">{link.code}</Text>
           <Text as="span" variant="bodySm" tone="subdued">{getPartnerName(link.partnerId)}</Text>
@@ -94,7 +94,7 @@ export function AffiliateProgram({ affiliateLinks, referrals, partners, onCreate
       <InlineStack gap="200" key={`actions-${link.id}`}>
         <Tooltip content={copiedLinkId === link.id ? 'Copied!' : 'Copy link'}>
           <Button
-            icon={ClipboardIcon}
+            icon={ClipboardMinor}
             size="slim"
             onClick={() => handleCopyLink(link.id, link.code)}
           />

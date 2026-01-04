@@ -10,7 +10,7 @@ import {
   Select,
   Button
 } from '@shopify/polaris';
-import { ChevronDownIcon, ChevronRightIcon } from '@shopify/polaris-icons';
+import { ChevronDownMinor, ChevronRightMinor } from '@shopify/polaris-icons';
 import type { GnuCashAccount, AccountType } from '../../lib/gnucash';
 
 interface AccountsViewProps {
@@ -118,7 +118,7 @@ export function AccountsView({ accounts }: AccountsViewProps) {
       <div key={account.id} style={{ paddingLeft: `${indent}px` }} className="flex items-center gap-2">
         {account.hasChildren ? (
           <Button
-            icon={expandedAccounts.has(account.id) ? ChevronDownIcon : ChevronRightIcon}
+            icon={expandedAccounts.has(account.id) ? ChevronDownMinor : ChevronRightMinor}
             variant="plain"
             onClick={() => toggleExpand(account.id)}
             accessibilityLabel={expandedAccounts.has(account.id) ? 'Collapse' : 'Expand'}

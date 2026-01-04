@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigation } from "@shopify/polaris";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -31,6 +31,7 @@ interface NavigationMenuProps {
 
 export function NavigationMenu({ _items }: NavigationMenuProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isTestMode } = useTestMode();
 
   const mainItems = [

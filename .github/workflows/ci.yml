@@ -16,9 +16,12 @@ env:
   YARN_ENABLE_GLOBAL_CACHE: false
 
 jobs:
-  lint:
-    name: Lint
+  # Dependency installation and caching - shared across jobs
+  setup:
+    name: Setup
     runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.yarn-cache.outputs.cache-hit }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,6 +39,7 @@ jobs:
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn dependencies
+        id: yarn-cache
         uses: actions/cache@v4
         with:
           path: |
@@ -43,6 +47,44 @@ jobs:
             .yarn/cache
             .yarn/unplugged
             .yarn/install-state.gz
+            node_modules
+          key: yarn-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            yarn-${{ runner.os }}-
+
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --immutable
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Get yarn cache directory
+        id: yarn-cache-dir
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - name: Restore yarn cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir.outputs.dir }}
+            .yarn/cache
+            .yarn/unplugged
+            .yarn/install-state.gz
+            node_modules
           key: yarn-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             yarn-${{ runner.os }}-
@@ -59,6 +101,7 @@ jobs:
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
+    needs: setup
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -75,7 +118,7 @@ jobs:
         id: yarn-cache-dir
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
-      - name: Cache yarn dependencies
+      - name: Restore yarn cache
         uses: actions/cache@v4
         with:
           path: |
@@ -83,6 +126,7 @@ jobs:
             .yarn/cache
             .yarn/unplugged
             .yarn/install-state.gz
+            node_modules
           key: yarn-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             yarn-${{ runner.os }}-
@@ -96,6 +140,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+    needs: setup
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -112,7 +157,7 @@ jobs:
         id: yarn-cache-dir
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
-      - name: Cache yarn dependencies
+      - name: Restore yarn cache
         uses: actions/cache@v4
         with:
           path: |
@@ -120,6 +165,7 @@ jobs:
             .yarn/cache
             .yarn/unplugged
             .yarn/install-state.gz
+            node_modules
           key: yarn-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             yarn-${{ runner.os }}-
@@ -152,8 +198,9 @@ jobs:
   e2e-tests:
     name: E2E Tests
     runs-on: ubuntu-latest
+    needs: [lint, typecheck]
     timeout-minutes: 30
-    continue-on-error: true  # E2E tests require environment variables that may not be set
+    continue-on-error: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -170,7 +217,7 @@ jobs:
         id: yarn-cache-dir
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
-      - name: Cache yarn dependencies
+      - name: Restore yarn cache
         uses: actions/cache@v4
         with:
           path: |
@@ -178,6 +225,7 @@ jobs:
             .yarn/cache
             .yarn/unplugged
             .yarn/install-state.gz
+            node_modules
           key: yarn-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             yarn-${{ runner.os }}-
@@ -191,17 +239,25 @@ jobs:
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
+        id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
 
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps chromium
+
+      - name: Install Playwright dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: yarn playwright install-deps chromium
 
       - name: Run E2E tests
         run: yarn test:e2e --project=chromium
         env:
           CI: true
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'placeholder-key' }}
 
       - name: Upload E2E test report
         uses: actions/upload-artifact@v4
@@ -239,7 +295,7 @@ jobs:
         id: yarn-cache-dir
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
-      - name: Cache yarn dependencies
+      - name: Restore yarn cache
         uses: actions/cache@v4
         with:
           path: |
@@ -247,6 +303,7 @@ jobs:
             .yarn/cache
             .yarn/unplugged
             .yarn/install-state.gz
+            node_modules
           key: yarn-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             yarn-${{ runner.os }}-
@@ -294,9 +351,17 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}
+          path: build/
+          retention-days: 7
+
   security:
     name: Security Scan
     runs-on: ubuntu-latest
+    needs: setup
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -319,7 +384,7 @@ jobs:
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, unit-tests, e2e-tests, build]
+    needs: [lint, typecheck, unit-tests, build]
     if: always()
     steps:
       - name: Check all jobs passed
@@ -328,9 +393,13 @@ jobs:
                 "${{ needs.typecheck.result }}" == "success" && \
                 "${{ needs.unit-tests.result }}" == "success" && \
                 "${{ needs.build.result }}" == "success" ]]; then
-            echo "All required jobs passed!"
+            echo "✅ All required jobs passed!"
             exit 0
           else
-            echo "Some jobs failed"
+            echo "❌ Some jobs failed:"
+            echo "  - lint: ${{ needs.lint.result }}"
+            echo "  - typecheck: ${{ needs.typecheck.result }}"
+            echo "  - unit-tests: ${{ needs.unit-tests.result }}"
+            echo "  - build: ${{ needs.build.result }}"
             exit 1
           fi

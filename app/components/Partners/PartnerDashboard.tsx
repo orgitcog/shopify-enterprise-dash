@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Badge, BlockStack, InlineStack, Text, ProgressBar, Icon } from '@shopify/polaris';
-import { TrendingUpIcon, PersonIcon, CashDollarIcon, ClockIcon } from '@shopify/polaris-icons';
+import { AnalyticsMajor, CustomersMajor, CashDollarMajor, ClockMajor } from '@shopify/polaris-icons';
 import type { PartnerDashboardData, PartnerTier, PartnerType } from './types';
 
 interface PartnerDashboardProps {
@@ -62,7 +62,7 @@ export function PartnerDashboard({ data }: PartnerDashboardProps) {
           <BlockStack gap="300">
             <InlineStack align="space-between">
               <Text as="p" variant="bodySm" tone="subdued">Total Partners</Text>
-              <Icon source={PersonIcon} tone="subdued" />
+              <Icon source={CustomersMajor} tone="subdued" />
             </InlineStack>
             <Text as="p" variant="headingXl">{totalPartners}</Text>
             <InlineStack gap="200">
@@ -78,7 +78,7 @@ export function PartnerDashboard({ data }: PartnerDashboardProps) {
           <BlockStack gap="300">
             <InlineStack align="space-between">
               <Text as="p" variant="bodySm" tone="subdued">Partner Revenue</Text>
-              <Icon source={TrendingUpIcon} tone="subdued" />
+              <Icon source={AnalyticsMajor} tone="subdued" />
             </InlineStack>
             <Text as="p" variant="headingXl">{formatCurrency(totalRevenue)}</Text>
             <InlineStack gap="200">
@@ -91,7 +91,7 @@ export function PartnerDashboard({ data }: PartnerDashboardProps) {
           <BlockStack gap="300">
             <InlineStack align="space-between">
               <Text as="p" variant="bodySm" tone="subdued">Total Commissions</Text>
-              <Icon source={CashDollarIcon} tone="subdued" />
+              <Icon source={CashDollarMajor} tone="subdued" />
             </InlineStack>
             <Text as="p" variant="headingXl">{formatCurrency(totalCommissions)}</Text>
             <Text as="p" variant="bodySm" tone="subdued">
@@ -104,7 +104,7 @@ export function PartnerDashboard({ data }: PartnerDashboardProps) {
           <BlockStack gap="300">
             <InlineStack align="space-between">
               <Text as="p" variant="bodySm" tone="subdued">Pending Payouts</Text>
-              <Icon source={ClockIcon} tone="subdued" />
+              <Icon source={ClockMajor} tone="subdued" />
             </InlineStack>
             <Text as="p" variant="headingXl">{formatCurrency(pendingPayouts)}</Text>
             <InlineStack gap="200">

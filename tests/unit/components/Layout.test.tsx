@@ -12,15 +12,21 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-// Mock lucide-react icons
-vi.mock('lucide-react', () => ({
-  LayoutDashboard: () => <span data-testid="icon-dashboard" />,
-  Users: () => <span data-testid="icon-users" />,
-  ShieldCheck: () => <span data-testid="icon-roles" />,
-  BarChart3: () => <span data-testid="icon-analytics" />,
-  FileText: () => <span data-testid="icon-reports" />,
-  Settings: () => <span data-testid="icon-settings" />,
-}));
+// Mock lucide-react icons - include ALL icons used by Layout component
+vi.mock('lucide-react', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('lucide-react')>();
+  return {
+    ...actual,
+    LayoutDashboard: () => <span data-testid="icon-dashboard" />,
+    Users: () => <span data-testid="icon-users" />,
+    ShieldCheck: () => <span data-testid="icon-roles" />,
+    BarChart3: () => <span data-testid="icon-analytics" />,
+    FileText: () => <span data-testid="icon-reports" />,
+    Settings: () => <span data-testid="icon-settings" />,
+    Handshake: () => <span data-testid="icon-partners" />,
+    Calculator: () => <span data-testid="icon-calculator" />,
+  };
+});
 
 // Mock the Layout subcomponents
 vi.mock('@/components/Layout/TopBar', () => ({
@@ -75,8 +81,10 @@ describe('Layout Component', () => {
     expect(screen.getByText('Overview')).toBeInTheDocument();
     expect(screen.getByText('Users')).toBeInTheDocument();
     expect(screen.getByText('Roles')).toBeInTheDocument();
+    expect(screen.getByText('Partners')).toBeInTheDocument();
     expect(screen.getByText('Analytics')).toBeInTheDocument();
     expect(screen.getByText('Reports')).toBeInTheDocument();
+    expect(screen.getByText('GnuCash')).toBeInTheDocument();
     expect(screen.getByText('Settings')).toBeInTheDocument();
   });
 

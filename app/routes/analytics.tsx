@@ -4,26 +4,49 @@ import { useState } from 'react';
 import { Page, Card, Tabs, _Layout, Button, ButtonGroup, Select } from '@shopify/polaris';
 import { CalendarRange } from 'lucide-react';
 import { ShopifyAnalytics } from '../components/Analytics/ShopifyAnalytics';
+import {
+  OrdersAnalytics,
+  getMockOrdersAnalytics,
+  ProductsAnalytics,
+  getMockProductsAnalytics,
+  CustomersAnalytics,
+  getMockCustomersAnalytics,
+  TrafficAnalytics,
+  getMockTrafficAnalytics
+} from '../components/Analytics';
 import { getAnalytics } from '../lib/shopify';
 
 export async function loader() {
   try {
     const analyticsData = await getAnalytics('MONTH');
-    return json({ 
+    const ordersData = getMockOrdersAnalytics();
+    const productsData = getMockProductsAnalytics();
+    const customersData = getMockCustomersAnalytics();
+    const trafficData = getMockTrafficAnalytics();
+
+    return json({
       analyticsData,
-      error: null 
+      ordersData,
+      productsData,
+      customersData,
+      trafficData,
+      error: null
     });
   } catch (error) {
     console.error("Error loading analytics data:", error);
-    return json({ 
+    return json({
       analyticsData: [],
-      error: "Failed to load analytics data" 
+      ordersData: getMockOrdersAnalytics(),
+      productsData: getMockProductsAnalytics(),
+      customersData: getMockCustomersAnalytics(),
+      trafficData: getMockTrafficAnalytics(),
+      error: "Failed to load analytics data"
     });
   }
 }
 
 export default function Analytics() {
-  const { analyticsData, _error } = useLoaderData<typeof loader>();
+  const { analyticsData, ordersData, productsData, customersData, trafficData, _error } = useLoaderData<typeof loader>();
   const [selected, setSelected] = useState(0);
   const [dateRange, setDateRange] = useState({
     start: new Date(new Date().setDate(new Date().getDate() - 30)),
@@ -92,14 +115,6 @@ export default function Analytics() {
     });
   };
 
-  const renderPlaceholderTab = (tabName: string) => (
-    <div className="mt-6 py-8 flex items-center justify-center text-gray-500 border border-dashed rounded">
-      <div className="text-center">
-        <p className="mb-2">This is where your {tabName.toLowerCase()} analytics chart would appear</p>
-        <p>Connect to your data source to visualize real metrics</p>
-      </div>
-    </div>
-  );
 
   return (
     <Page title="Analytics Dashboard">
@@ -166,11 +181,30 @@ export default function Analytics() {
               <ShopifyAnalytics analyticsData={analyticsData} />
             </div>
           )}
-          
-          {selected === 1 && renderPlaceholderTab('Orders')}
-          {selected === 2 && renderPlaceholderTab('Products')}
-          {selected === 3 && renderPlaceholderTab('Customers')}
-          {selected === 4 && renderPlaceholderTab('Traffic')}
+
+          {selected === 1 && (
+            <div className="mt-6">
+              <OrdersAnalytics data={ordersData} />
+            </div>
+          )}
+
+          {selected === 2 && (
+            <div className="mt-6">
+              <ProductsAnalytics data={productsData} />
+            </div>
+          )}
+
+          {selected === 3 && (
+            <div className="mt-6">
+              <CustomersAnalytics data={customersData} />
+            </div>
+          )}
+
+          {selected === 4 && (
+            <div className="mt-6">
+              <TrafficAnalytics data={trafficData} />
+            </div>
+          )}
           
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
             {[

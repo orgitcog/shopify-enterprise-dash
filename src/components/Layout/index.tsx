@@ -8,6 +8,8 @@ import {
   BarChart3,
   FileText,
   Settings,
+  Handshake,
+  Calculator,
 } from "lucide-react";
 import { TopBar } from "./TopBar";
 import { NavigationMenu } from "./NavigationMenu";
@@ -35,6 +37,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       selected: location.pathname.startsWith("/roles"),
     },
     {
+      label: "Partners",
+      icon: Handshake,
+      url: "/partners",
+      selected: location.pathname.startsWith("/partners"),
+    },
+    {
       label: "Analytics",
       icon: BarChart3,
       url: "/analytics",
@@ -45,6 +53,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       icon: FileText,
       url: "/reports",
       selected: location.pathname.startsWith("/reports"),
+    },
+    {
+      label: "GnuCash",
+      icon: Calculator,
+      url: "/integrations/gnucash",
+      selected: location.pathname.startsWith("/integrations/gnucash"),
     },
     {
       label: "Settings",

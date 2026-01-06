@@ -1,10 +1,17 @@
-import React from 'react';
-import { Card, Badge, BlockStack, InlineStack, Text, ProgressBar, Icon } from '@shopify/polaris';
-import { AnalyticsMajor, CustomersMajor, CashDollarMajor, ClockMajor } from '@shopify/polaris-icons';
+import React, { useMemo } from 'react';
+import { Card, Badge, BlockStack, InlineStack, Text, ProgressBar, Icon, Banner, Button, SkeletonBodyText } from '@shopify/polaris';
+import { AnalyticsMajor, CustomersMajor, CashDollarMajor, ClockMajor, RefreshMajor, AppsMajor } from '@shopify/polaris-icons';
 import type { PartnerDashboardData, PartnerTier, PartnerType } from './types';
+import { usePartnerApi, usePartnerStats, useAppEvents } from '../../src/hooks/usePartnerApi';
 
 interface PartnerDashboardProps {
   data: PartnerDashboardData;
+  // Optional Partner API integration
+  partnerApiConfig?: {
+    organizationId: string;
+    accessToken: string;
+    appId?: string;
+  };
 }
 
 const tierColors: Record<PartnerTier, string> = {
@@ -22,7 +29,7 @@ const typeLabels: Record<PartnerType, string> = {
   affiliate: 'Affiliates'
 };
 
-export function PartnerDashboard({ data }: PartnerDashboardProps) {
+export function PartnerDashboard({ data, partnerApiConfig }: PartnerDashboardProps) {
   const {
     totalPartners,
     activePartners,
@@ -35,6 +42,46 @@ export function PartnerDashboard({ data }: PartnerDashboardProps) {
     recentActivity,
     monthlyMetrics
   } = data;
+
+  // Partner API integration
+  const { client, isLoading: isConnecting, isConnected } = usePartnerApi(
+    partnerApiConfig ? {
+      organizationId: partnerApiConfig.organizationId,
+      accessToken: partnerApiConfig.accessToken,
+    } : null
+  );
+
+  const { stats, isLoading: isLoadingStats, refetch: refetchStats } = usePartnerStats(
+    client,
+    partnerApiConfig?.appId
+  );
+
+  const { events, isLoading: isLoadingEvents } = useAppEvents(
+    client,
+    partnerApiConfig?.appId || null,
+    50
+  );
+
+  // Calculate app metrics from Partner API
+  const appMetrics = useMemo(() => {
+    if (!events?.edges) {
+      return { installs: 0, uninstalls: 0, netGrowth: 0 };
+    }
+
+    let installs = 0;
+    let uninstalls = 0;
+
+    events.edges.forEach(({ node }) => {
+      const eventType = node.type.toLowerCase();
+      if (eventType.includes('install') && !eventType.includes('uninstall')) {
+        installs++;
+      } else if (eventType.includes('uninstall')) {
+        uninstalls++;
+      }
+    });
+
+    return { installs, uninstalls, netGrowth: installs - uninstalls };
+  }, [events]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount);
@@ -54,8 +101,31 @@ export function PartnerDashboard({ data }: PartnerDashboardProps) {
   // Calculate max for chart scaling
   const maxRevenue = Math.max(...monthlyMetrics.map(m => m.revenue));
 
+  const isLoading = isConnecting || isLoadingStats || isLoadingEvents;
+
   return (
     <BlockStack gap="400">
+      {/* Partner API Status Banner */}
+      {partnerApiConfig && (
+        <Banner
+          tone={isConnected ? 'success' : isLoading ? 'info' : 'warning'}
+          action={isConnected ? { content: 'Refresh', onAction: refetchStats, icon: RefreshMajor } : undefined}
+        >
+          <InlineStack gap="200" blockAlign="center">
+            {isLoading ? (
+              <Text as="span">Connecting to Partner API...</Text>
+            ) : isConnected ? (
+              <>
+                <Text as="span">Connected to Shopify Partner API</Text>
+                <Badge tone="success">Live</Badge>
+              </>
+            ) : (
+              <Text as="span">Partner API not connected</Text>
+            )}
+          </InlineStack>
+        </Banner>
+      )}
+
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
@@ -113,6 +183,66 @@ export function PartnerDashboard({ data }: PartnerDashboardProps) {
           </BlockStack>
         </Card>
       </div>
+
+      {/* Partner API Metrics (if connected) */}
+      {partnerApiConfig && isConnected && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <BlockStack gap="300">
+              <InlineStack align="space-between">
+                <Text as="p" variant="bodySm" tone="subdued">App Installs</Text>
+                <Icon source={AppsMajor} tone="subdued" />
+              </InlineStack>
+              {isLoadingEvents ? (
+                <SkeletonBodyText lines={1} />
+              ) : (
+                <>
+                  <Text as="p" variant="headingXl">{appMetrics.installs}</Text>
+                  <Badge tone="success">From Partner API</Badge>
+                </>
+              )}
+            </BlockStack>
+          </Card>
+
+          <Card>
+            <BlockStack gap="300">
+              <InlineStack align="space-between">
+                <Text as="p" variant="bodySm" tone="subdued">App Uninstalls</Text>
+                <Icon source={AppsMajor} tone="subdued" />
+              </InlineStack>
+              {isLoadingEvents ? (
+                <SkeletonBodyText lines={1} />
+              ) : (
+                <>
+                  <Text as="p" variant="headingXl">{appMetrics.uninstalls}</Text>
+                  <Badge tone="attention">From Partner API</Badge>
+                </>
+              )}
+            </BlockStack>
+          </Card>
+
+          <Card>
+            <BlockStack gap="300">
+              <InlineStack align="space-between">
+                <Text as="p" variant="bodySm" tone="subdued">Net Growth</Text>
+                <Icon source={AnalyticsMajor} tone="subdued" />
+              </InlineStack>
+              {isLoadingEvents ? (
+                <SkeletonBodyText lines={1} />
+              ) : (
+                <>
+                  <Text as="p" variant="headingXl">
+                    {appMetrics.netGrowth >= 0 ? '+' : ''}{appMetrics.netGrowth}
+                  </Text>
+                  <Badge tone={appMetrics.netGrowth >= 0 ? 'success' : 'critical'}>
+                    {appMetrics.netGrowth >= 0 ? 'Growing' : 'Declining'}
+                  </Badge>
+                </>
+              )}
+            </BlockStack>
+          </Card>
+        </div>
+      )}
 
       {/* Charts and Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -217,6 +347,44 @@ export function PartnerDashboard({ data }: PartnerDashboardProps) {
           </BlockStack>
         </BlockStack>
       </Card>
+
+      {/* Partner API Events (if connected) */}
+      {partnerApiConfig && isConnected && events?.edges && events.edges.length > 0 && (
+        <Card>
+          <BlockStack gap="400">
+            <InlineStack align="space-between">
+              <Text as="h3" variant="headingMd">Partner API Events</Text>
+              <Badge tone="info">{events.edges.length} events</Badge>
+            </InlineStack>
+            {isLoadingEvents ? (
+              <SkeletonBodyText lines={5} />
+            ) : (
+              <BlockStack gap="300">
+                {events.edges.slice(0, 10).map(({ node }, index) => (
+                  <div key={index} className="flex items-center justify-between py-2 border-b last:border-b-0">
+                    <InlineStack gap="300">
+                      <Badge tone={node.type.toLowerCase().includes('install') && !node.type.toLowerCase().includes('uninstall') ? 'success' : 'attention'}>
+                        {node.type}
+                      </Badge>
+                      <BlockStack gap="050">
+                        <Text as="span" variant="bodyMd">
+                          {node.shop?.name || 'Unknown Shop'}
+                        </Text>
+                        <Text as="span" variant="bodySm" tone="subdued">
+                          {node.shop?.myshopifyDomain || 'N/A'}
+                        </Text>
+                      </BlockStack>
+                    </InlineStack>
+                    <Text as="span" variant="bodySm" tone="subdued">
+                      {formatTime(node.occurredAt)}
+                    </Text>
+                  </div>
+                ))}
+              </BlockStack>
+            )}
+          </BlockStack>
+        </Card>
+      )}
     </BlockStack>
   );
 }

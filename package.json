@@ -9,7 +9,7 @@
     "build:production": "NODE_ENV=production remix build",
     "start": "remix-serve build/index.js",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --report-unused-disable-directives",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 50",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",

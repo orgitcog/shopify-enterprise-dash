@@ -35,6 +35,34 @@ export default tseslint.config(
     },
   },
   {
+    // Remix routes legitimately export loader/action/meta alongside components
+    files: ['app/routes/**/*.{ts,tsx}', 'app/root.tsx', 'src/root.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
+    // Context files export hooks alongside providers
+    files: ['**/context/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
+    // Analytics components may export helper functions
+    files: ['app/components/Analytics/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
+    // Legacy integration libraries - relaxed rules for external API handling
+    files: ['src/lib/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
+  {
     files: ['tests/**/*.{ts,tsx}', '**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',

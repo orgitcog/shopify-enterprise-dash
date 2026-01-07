@@ -15,7 +15,7 @@ Shopify Enterprise Dashboard - A multi-store management platform built with Reac
 - **State Management**: Zustand + TanStack Query v5
 - **Charts**: Recharts + Chart.js
 - **Testing**: Vitest (unit) + Playwright (E2E)
-- **Package Manager**: Yarn 1.x Classic (use `yarn`, not `npm`)
+- **Package Manager**: Yarn 4.x (via Corepack, use `yarn`, not `npm`)
 
 ## Project Structure
 

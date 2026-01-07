@@ -19,7 +19,6 @@ import {
   Divider,
   EmptyState,
   Pagination,
-  Tooltip,
   Icon,
 } from "@shopify/polaris";
 import {

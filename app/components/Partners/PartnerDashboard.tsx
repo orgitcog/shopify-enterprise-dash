@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Card, Badge, BlockStack, InlineStack, Text, ProgressBar, Icon, Banner, Button, SkeletonBodyText } from '@shopify/polaris';
+import { Card, Badge, BlockStack, InlineStack, Text, ProgressBar, Icon, Banner, SkeletonBodyText } from '@shopify/polaris';
 import { AnalyticsMajor, CustomersMajor, CashDollarMajor, ClockMajor, RefreshMajor, AppsMajor } from '@shopify/polaris-icons';
 import type { PartnerDashboardData, PartnerTier, PartnerType } from './types';
 import { usePartnerApi, usePartnerStats, useAppEvents } from '../../src/hooks/usePartnerApi';
@@ -51,7 +51,7 @@ export function PartnerDashboard({ data, partnerApiConfig }: PartnerDashboardPro
     } : null
   );
 
-  const { stats, isLoading: isLoadingStats, refetch: refetchStats } = usePartnerStats(
+  const { stats: _stats, isLoading: isLoadingStats, refetch: refetchStats } = usePartnerStats(
     client,
     partnerApiConfig?.appId
   );

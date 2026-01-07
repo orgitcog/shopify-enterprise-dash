@@ -24,7 +24,6 @@ import {
 import {
   RefreshMajor,
   CalendarMajor,
-  AnalyticsMajor,
   AppsMajor,
   TransactionMajor,
   ChartVerticalMajor,

@@ -7,7 +7,7 @@ import {
   useApp,
   usePartnerStats,
 } from '../../../src/hooks/usePartnerApi';
-import { PartnerApiClient } from '../../../src/lib/partnerApi';
+import { PartnerApiClient, createPartnerApiClientWithCredentials } from '../../../src/lib/partnerApi';
 
 // Mock the partnerApi module
 vi.mock('../../../src/lib/partnerApi', () => ({
@@ -38,7 +38,6 @@ describe('usePartnerApi', () => {
     MockPartnerApiClient.mockImplementation(() => mockClient as any);
     
     // Mock createPartnerApiClientWithCredentials
-    const { createPartnerApiClientWithCredentials } = require('../../../src/lib/partnerApi');
     vi.mocked(createPartnerApiClientWithCredentials).mockReturnValue(mockClient as any);
   });
 

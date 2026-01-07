@@ -17,16 +17,27 @@ import {
   generateMockApplications
 } from '../components/Partners';
 
+// Extend Window interface for environment variables
+declare global {
+  interface Window {
+    __ENV__?: {
+      VITE_SHOPIFY_PARTNER_ORG_ID?: string;
+      VITE_SHOPIFY_PARTNER_API_TOKEN?: string;
+      VITE_SHOPIFY_APP_ID?: string;
+    };
+  }
+}
+
 // Partner API configuration from environment
 const PARTNER_API_CONFIG = {
   organizationId: typeof window !== 'undefined' 
-    ? (window as any).__ENV__?.VITE_SHOPIFY_PARTNER_ORG_ID || '3604544'
+    ? window.__ENV__?.VITE_SHOPIFY_PARTNER_ORG_ID || '3604544'
     : process.env.VITE_SHOPIFY_PARTNER_ORG_ID || '3604544',
   accessToken: typeof window !== 'undefined'
-    ? (window as any).__ENV__?.VITE_SHOPIFY_PARTNER_API_TOKEN || ''
+    ? window.__ENV__?.VITE_SHOPIFY_PARTNER_API_TOKEN || ''
     : process.env.SHOPIFY_PARTNER_CLIENT_API || '',
   appId: typeof window !== 'undefined'
-    ? (window as any).__ENV__?.VITE_SHOPIFY_APP_ID || ''
+    ? window.__ENV__?.VITE_SHOPIFY_APP_ID || ''
     : process.env.VITE_SHOPIFY_APP_ID || '',
 };
 
